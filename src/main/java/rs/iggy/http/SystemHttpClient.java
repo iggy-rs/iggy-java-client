@@ -40,6 +40,6 @@ class SystemHttpClient implements SystemClient {
     @Override
     public String ping() {
         var request = httpClient.prepareGetRequest(PING);
-        return httpClient.execute(request);
+        return httpClient.executeWithStringResponse(request);
     }
 }
