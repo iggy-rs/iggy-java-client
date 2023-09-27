@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 public record ClientInfoDetails(
-        String clientId,
-        Optional<String> userId,
+        Long clientId,
+        Optional<Long> userId,
         String address,
         String transport,
-        long consumerGroupsCount,
+        Long consumerGroupsCount,
         List<ConsumerGroupInfo> consumerGroups
 ) {
 }
