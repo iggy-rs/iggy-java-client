@@ -1,4 +1,4 @@
 @NonNullApi
-package rs.iggy.users;
+package rs.iggy.user;
 
 import rs.iggy.NonNullApi;

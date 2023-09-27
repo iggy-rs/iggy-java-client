@@ -2,15 +2,15 @@ package rs.iggy.http;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import rs.iggy.stream.StreamClient;
-import rs.iggy.users.UsersClient;
+import rs.iggy.stream.StreamsClient;
+import rs.iggy.user.UsersClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class StreamHttpClientTest {
 
     IggyHttpClient iggy = new IggyHttpClient("http://localhost:3000");
     UsersClient usersClient = iggy.users();
-    StreamClient streamsClient = iggy.streams();
+    StreamsClient streamsClient = iggy.streams();
 
     @BeforeEach
     void beforeEach() {

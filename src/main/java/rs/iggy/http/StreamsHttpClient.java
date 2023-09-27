@@ -2,16 +2,16 @@ package rs.iggy.http;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import rs.iggy.stream.StreamBase;
-import rs.iggy.stream.StreamClient;
 import rs.iggy.stream.StreamDetails;
+import rs.iggy.stream.StreamsClient;
 import java.util.List;
 
-class StreamHttpClient implements StreamClient {
+class StreamsHttpClient implements StreamsClient {
 
     private final HttpClient httpClient;
     private static final String STREAMS = "/streams";
 
-    public StreamHttpClient(HttpClient httpClient) {
+    public StreamsHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

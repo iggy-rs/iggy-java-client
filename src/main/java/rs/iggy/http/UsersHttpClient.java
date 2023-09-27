@@ -1,7 +1,7 @@
 package rs.iggy.http;
 
-import rs.iggy.users.IdentityInfo;
-import rs.iggy.users.UsersClient;
+import rs.iggy.user.IdentityInfo;
+import rs.iggy.user.UsersClient;
 
 class UsersHttpClient implements UsersClient {
 

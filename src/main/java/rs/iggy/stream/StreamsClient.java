@@ -2,7 +2,7 @@ package rs.iggy.stream;
 
 import java.util.List;
 
-public interface StreamClient {
+public interface StreamsClient {
 
     StreamDetails getStream(Long streamId);
 

@@ -1,19 +1,19 @@
 package rs.iggy.http;
 
-import rs.iggy.stream.StreamClient;
+import rs.iggy.stream.StreamsClient;
 import rs.iggy.system.SystemClient;
-import rs.iggy.users.UsersClient;
+import rs.iggy.user.UsersClient;
 
 public class IggyHttpClient {
 
     private final SystemHttpClient systemClient;
-    private final StreamHttpClient streamClient;
+    private final StreamsHttpClient streamsClient;
     private final UsersHttpClient usersClient;
 
     public IggyHttpClient(String url) {
         HttpClient httpClient = new HttpClient(url);
         systemClient = new SystemHttpClient(httpClient);
-        streamClient = new StreamHttpClient(httpClient);
+        streamsClient = new StreamsHttpClient(httpClient);
         usersClient = new UsersHttpClient(httpClient);
     }
 
@@ -21,8 +21,8 @@ public class IggyHttpClient {
         return systemClient;
     }
 
-    public StreamClient streams() {
-        return streamClient;
+    public StreamsClient streams() {
+        return streamsClient;
     }
 
     public UsersClient users() {
