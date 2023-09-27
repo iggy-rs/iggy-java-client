@@ -11,14 +11,21 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import rs.iggy.http.error.IggyHttpError;
 import rs.iggy.http.error.IggyHttpException;
 import java.io.IOException;
+import java.util.Optional;
 
 class HttpClient {
 
+    private static final String AUTHORIZATION = "Authorization";
     private final String url;
     private final ObjectMapper objectMapper = ObjectMapperFactory.getInstance();
+    private Optional<String> token = Optional.empty();
 
     HttpClient(String url) {
         this.url = url;
+    }
+
+    void setToken(Optional<String> token) {
+        this.token = token;
     }
 
     <T> T execute(ClassicHttpRequest request, Class<T> clazz) {
@@ -63,19 +70,27 @@ class HttpClient {
     }
 
     ClassicHttpRequest prepareGetRequest(String path) {
-        return ClassicRequestBuilder.get(url + path).build();
+        return ClassicRequestBuilder.get(url + path)
+                .setHeader(AUTHORIZATION, getBearerToken())
+                .build();
     }
 
     ClassicHttpRequest preparePostRequest(String path, Object body) {
-        return addRequestBody(ClassicRequestBuilder.post(url + path), body);
+        var builder = ClassicRequestBuilder.post(url + path)
+                .setHeader(AUTHORIZATION, getBearerToken());
+        return addRequestBody(builder, body);
     }
 
     ClassicHttpRequest preparePutRequest(String path, Object body) {
-        return addRequestBody(ClassicRequestBuilder.put(url + path), body);
+        var builder = ClassicRequestBuilder.put(url + path)
+                .setHeader(AUTHORIZATION, getBearerToken());
+        return addRequestBody(builder, body);
     }
 
     ClassicHttpRequest prepareDeleteRequest(String path) {
-        return ClassicRequestBuilder.delete(url + path).build();
+        return ClassicRequestBuilder.delete(url + path)
+                .setHeader(AUTHORIZATION, getBearerToken())
+                .build();
     }
 
     private ClassicHttpRequest addRequestBody(ClassicRequestBuilder requestBuilder, Object body) {
@@ -95,6 +110,10 @@ class HttpClient {
             var error = objectMapper.readValue(response.getEntity().getContent(), IggyHttpError.class);
             throw new IggyHttpException(error);
         }
+    }
+
+    private String getBearerToken() {
+        return token.map(t -> "Bearer " + t).orElse("");
     }
 
     private static boolean isSuccessful(int statusCode) {
