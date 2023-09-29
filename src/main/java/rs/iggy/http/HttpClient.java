@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import rs.iggy.http.error.IggyHttpError;
 import rs.iggy.http.error.IggyHttpException;
@@ -87,9 +88,10 @@ class HttpClient {
         return addRequestBody(builder, body);
     }
 
-    ClassicHttpRequest prepareDeleteRequest(String path) {
+    ClassicHttpRequest prepareDeleteRequest(String path, NameValuePair... params) {
         return ClassicRequestBuilder.delete(url + path)
                 .setHeader(AUTHORIZATION, getBearerToken())
+                .addParameters(params)
                 .build();
     }
 
