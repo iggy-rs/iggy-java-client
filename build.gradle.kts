@@ -13,6 +13,7 @@ dependencies {
     implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2")
+    implementation("org.apache.commons:commons-lang3:3.13.0")
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))

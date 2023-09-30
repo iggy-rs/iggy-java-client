@@ -9,12 +9,16 @@ import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rs.iggy.http.error.IggyHttpError;
 import rs.iggy.http.error.IggyHttpException;
 import java.io.IOException;
 import java.util.Optional;
 
 class HttpClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);
 
     private static final String AUTHORIZATION = "Authorization";
     private final String url;
@@ -98,9 +102,11 @@ class HttpClient {
 
     private ClassicHttpRequest addRequestBody(ClassicRequestBuilder requestBuilder, Object body) {
         try {
+            var encodedBody = objectMapper.writeValueAsString(body);
+            LOG.debug("Request body: {}", encodedBody);
             return requestBuilder
                     .setHeader("Content-Type", "application/json")
-                    .setEntity(objectMapper.writeValueAsString(body))
+                    .setEntity(encodedBody)
                     .build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

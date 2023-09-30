@@ -2,6 +2,7 @@ package rs.iggy.http;
 
 import rs.iggy.consumergroup.ConsumerGroupsClient;
 import rs.iggy.consumeroffset.ConsumerOffsetsClient;
+import rs.iggy.message.MessagesClient;
 import rs.iggy.partition.PartitionsClient;
 import rs.iggy.stream.StreamsClient;
 import rs.iggy.system.SystemClient;
@@ -16,7 +17,8 @@ public class IggyHttpClient {
     private final TopicsHttpClient topicsClient;
     private final PartitionsHttpClient partitionsClient;
     private final ConsumerGroupsHttpClient consumerGroupsClient;
-    private final ConsumerOffsetsHttpClient consumerOffsetsHttpClient;
+    private final ConsumerOffsetsHttpClient consumerOffsetsClient;
+    private final MessagesHttpClient messagesClient;
 
     public IggyHttpClient(String url) {
         HttpClient httpClient = new HttpClient(url);
@@ -26,7 +28,8 @@ public class IggyHttpClient {
         topicsClient = new TopicsHttpClient(httpClient);
         partitionsClient = new PartitionsHttpClient(httpClient);
         consumerGroupsClient = new ConsumerGroupsHttpClient(httpClient);
-        consumerOffsetsHttpClient = new ConsumerOffsetsHttpClient(httpClient);
+        consumerOffsetsClient = new ConsumerOffsetsHttpClient(httpClient);
+        messagesClient = new MessagesHttpClient(httpClient);
     }
 
     public SystemClient system() {
@@ -54,7 +57,11 @@ public class IggyHttpClient {
     }
 
     public ConsumerOffsetsClient consumerOffsets() {
-        return consumerOffsetsHttpClient;
+        return consumerOffsetsClient;
+    }
+
+    public MessagesClient messages() {
+        return messagesClient;
     }
 
 }
