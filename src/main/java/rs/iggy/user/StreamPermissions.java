@@ -1,6 +1,7 @@
 package rs.iggy.user;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public record StreamPermissions(
         boolean manageStream,
@@ -9,6 +10,6 @@ public record StreamPermissions(
         boolean readTopics,
         boolean pollMessages,
         boolean sendMessages,
-        HashMap<Long, TopicPermissions> topics
+        Optional<Map<Long, TopicPermissions>> topics
 ) {
 }
