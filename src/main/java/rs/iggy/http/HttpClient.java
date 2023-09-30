@@ -70,9 +70,10 @@ class HttpClient {
         }
     }
 
-    ClassicHttpRequest prepareGetRequest(String path) {
+    ClassicHttpRequest prepareGetRequest(String path, NameValuePair... params) {
         return ClassicRequestBuilder.get(url + path)
                 .setHeader(AUTHORIZATION, getBearerToken())
+                .addParameters(params)
                 .build();
     }
 
