@@ -1,5 +1,6 @@
 package rs.iggy.http;
 
+import rs.iggy.consumergroup.ConsumerGroupsClient;
 import rs.iggy.partition.PartitionsClient;
 import rs.iggy.stream.StreamsClient;
 import rs.iggy.system.SystemClient;
@@ -13,6 +14,7 @@ public class IggyHttpClient {
     private final UsersHttpClient usersClient;
     private final TopicsHttpClient topicsClient;
     private final PartitionsHttpClient partitionsClient;
+    private final ConsumerGroupsHttpClient consumerGroupsClient;
 
     public IggyHttpClient(String url) {
         HttpClient httpClient = new HttpClient(url);
@@ -21,6 +23,7 @@ public class IggyHttpClient {
         usersClient = new UsersHttpClient(httpClient);
         topicsClient = new TopicsHttpClient(httpClient);
         partitionsClient = new PartitionsHttpClient(httpClient);
+        consumerGroupsClient = new ConsumerGroupsHttpClient(httpClient);
     }
 
     public SystemClient system() {
@@ -41,6 +44,10 @@ public class IggyHttpClient {
 
     public PartitionsClient partitions() {
         return partitionsClient;
+    }
+
+    public ConsumerGroupsClient consumerGroups() {
+        return consumerGroupsClient;
     }
 
 }
