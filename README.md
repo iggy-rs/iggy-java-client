@@ -2,7 +2,7 @@
 
 [Iggy GitHub](https://github.com/iggy-rs/iggy) | [Website](https://iggy.rs) | [Getting started](https://docs.iggy.rs/introduction/getting-started/) | [Documentation](https://docs.iggy.rs) | [Discord](https://iggy.rs/discord)
 
-[![Tests](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml)
+[![Tests](https://github.com/iggy-rs/iggy-java-client/actions/workflows/tests.yml/badge.svg)](https://github.com/iggy-rs/iggy-java-client/actions/workflows/tests.yml)
 
 ---
 
