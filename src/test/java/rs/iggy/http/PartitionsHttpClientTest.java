@@ -3,34 +3,35 @@ package rs.iggy.http;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.iggy.partition.PartitionsClient;
+import rs.iggy.topic.TopicDetails;
 import rs.iggy.topic.TopicsClient;
-import rs.iggy.user.UsersClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PartitionsHttpClientTest {
+class PartitionsHttpClientTest extends BaseHttpClientIntegrationTest {
 
-    IggyHttpClient iggy = new IggyHttpClient("http://localhost:3000");
-    UsersClient usersClient = iggy.users();
-    TopicsClient topicsClient = iggy.topics();
-    PartitionsClient partitionsClient = iggy.partitions();
+    TopicsClient topicsClient;
+    PartitionsClient partitionsClient;
 
     @BeforeEach
     void beforeEach() {
-        usersClient.login("iggy", "iggy");
+        topicsClient = client.topics();
+        partitionsClient = client.partitions();
+
+        login(client);
+        setUpStreamAndTopic(client);
     }
 
 
     @Test
     void shouldCreateAndDeletePartitions() {
         // given
-        var topic = topicsClient.getTopic(42L, 42L);
-        assert topic.partitionsCount() == 1L;
+        assert topicsClient.getTopic(42L, 42L).partitionsCount() == 1L;
 
         // when
         partitionsClient.createPartitions(42L, 42L, 10L);
 
         // then
-        topic = topicsClient.getTopic(42L, 42L);
+        TopicDetails topic = topicsClient.getTopic(42L, 42L);
         assertThat(topic.partitionsCount()).isEqualTo(11L);
 
         // when

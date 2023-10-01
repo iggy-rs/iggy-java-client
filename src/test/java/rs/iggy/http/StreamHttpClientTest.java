@@ -3,22 +3,21 @@ package rs.iggy.http;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.iggy.stream.StreamsClient;
-import rs.iggy.user.UsersClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StreamHttpClientTest {
+class StreamHttpClientTest extends BaseHttpClientIntegrationTest {
 
-    IggyHttpClient iggy = new IggyHttpClient("http://localhost:3000");
-    UsersClient usersClient = iggy.users();
-    StreamsClient streamsClient = iggy.streams();
+    StreamsClient streamsClient;
 
     @BeforeEach
     void beforeEach() {
-        usersClient.login("iggy", "iggy");
+        streamsClient = client.streams();
+
+        login(client);
     }
 
     @Test
-    void shouldCreateStream() {
+    void shouldCreateAndDeleteStream() {
         // when
         streamsClient.createStream(42L, "test-stream");
         var stream = streamsClient.getStream(42L);
@@ -27,10 +26,7 @@ class StreamHttpClientTest {
         assertThat(stream).isNotNull();
         assertThat(stream.id()).isEqualTo(42L);
         assertThat(stream.name()).isEqualTo("test-stream");
-    }
 
-    @Test
-    void shouldDeleteStream() {
         // when
         streamsClient.deleteStream(42L);
         var streams = streamsClient.getStreams();

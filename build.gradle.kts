@@ -16,6 +16,8 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.13.0")
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
+    testImplementation("org.testcontainers:testcontainers:1.19.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.0")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.24.2")
