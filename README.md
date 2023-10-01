@@ -1,8 +1,10 @@
-<div align="center">
-[![Tests](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml)
-</div>
+# Java SDK for Iggy
 
-# Java SDK for [Iggy](https://github.com/iggy-rs/iggy)
+[Iggy GitHub](https://github.com/iggy-rs/iggy) | [Website](https://iggy.rs) | [Getting started](https://docs.iggy.rs/introduction/getting-started/) | [Documentation](https://docs.iggy.rs) | [Discord](https://iggy.rs/discord)
+
+[![Tests](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/iggy-rs/iggy-java-client/actions/workflows/test.yml)
+
+---
 
 Official Java client SDK for [Iggy.rs](https://iggy.rs) message streaming.
 
