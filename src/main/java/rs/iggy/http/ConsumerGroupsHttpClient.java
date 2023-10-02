@@ -21,6 +21,12 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
+    public ConsumerGroupDetails getConsumerGroup(Long streamId, Long topicId, String consumerGroupName) {
+        var request = httpClient.prepareGetRequest(path(streamId, topicId) + "/" + consumerGroupName);
+        return httpClient.execute(request, ConsumerGroupDetails.class);
+    }
+
+    @Override
     public List<ConsumerGroup> getConsumerGroups(Long streamId, Long topicId) {
         var request = httpClient.prepareGetRequest(path(streamId, topicId));
         return httpClient.execute(request, new TypeReference<>() {
@@ -28,8 +34,9 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public void createConsumerGroup(Long streamId, Long topicId, Long consumerGroupId) {
-        var request = httpClient.preparePostRequest(path(streamId, topicId), new CreateConsumerGroup(consumerGroupId));
+    public void createConsumerGroup(Long streamId, Long topicId, Long consumerGroupId, String consumerGroupName) {
+        var request = httpClient.preparePostRequest(path(streamId, topicId),
+                new CreateConsumerGroup(consumerGroupId, consumerGroupName));
         httpClient.execute(request);
     }
 
@@ -40,7 +47,18 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
+    public void deleteConsumerGroup(Long streamId, Long topicId, String consumerGroupName) {
+        var request = httpClient.prepareDeleteRequest(path(streamId, topicId) + "/" + consumerGroupName);
+        httpClient.execute(request);
+    }
+
+    @Override
     public void joinConsumerGroup(Long streamId, Long topicId, Long consumerGroupId) {
+        throw new UnsupportedOperationException("Method not available in HTTP client");
+    }
+
+    @Override
+    public void joinConsumerGroup(Long streamId, Long topicId, String consumerGroupName) {
         throw new UnsupportedOperationException("Method not available in HTTP client");
     }
 
@@ -49,11 +67,16 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
         throw new UnsupportedOperationException("Method not available in HTTP client");
     }
 
+    @Override
+    public void leaveConsumerGroup(Long streamId, Long topicId, String consumerGroupName) {
+        throw new UnsupportedOperationException("Method not available in HTTP client");
+    }
+
     private static String path(Long streamId, Long topicId) {
         return "/streams/" + streamId + "/topics/" + topicId + "/consumer-groups";
     }
 
-    private record CreateConsumerGroup(Long consumerGroupId) {
+    private record CreateConsumerGroup(Long consumerGroupId, String name) {
     }
 
 }
