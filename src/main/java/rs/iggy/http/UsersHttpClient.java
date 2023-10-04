@@ -1,6 +1,7 @@
 package rs.iggy.http;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import rs.iggy.identifier.UserId;
 import rs.iggy.user.*;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,11 @@ class UsersHttpClient implements UsersClient {
 
     @Override
     public UserInfoDetails getUser(Long userId) {
+        return getUser(UserId.of(userId));
+    }
+
+    @Override
+    public UserInfoDetails getUser(UserId userId) {
         var request = httpClient.prepareGetRequest(USERS + "/" + userId);
         return httpClient.execute(request, UserInfoDetails.class);
     }
@@ -35,25 +41,47 @@ class UsersHttpClient implements UsersClient {
 
     @Override
     public void deleteUser(Long userId) {
+        deleteUser(UserId.of(userId));
+    }
+
+    @Override
+    public void deleteUser(UserId userId) {
         var request = httpClient.prepareDeleteRequest(USERS + "/" + userId);
         httpClient.execute(request);
     }
 
     @Override
     public void updateUser(Long userId, Optional<String> username, Optional<UserStatus> status) {
+        updateUser(UserId.of(userId), username, status);
+    }
+
+    @Override
+    public void updateUser(UserId userId, Optional<String> username, Optional<UserStatus> status) {
         var request = httpClient.preparePutRequest(USERS + "/" + userId, new UpdateUser(username, status));
         httpClient.execute(request);
     }
 
     @Override
     public void updatePermissions(Long userId, Optional<Permissions> permissions) {
-        var request = httpClient.preparePutRequest(USERS + "/" + userId + "/permissions", new UpdatePermissions(permissions));
+        updatePermissions(UserId.of(userId), permissions);
+    }
+
+    @Override
+    public void updatePermissions(UserId userId, Optional<Permissions> permissions) {
+        var request = httpClient.preparePutRequest(USERS + "/" + userId + "/permissions",
+                new UpdatePermissions(permissions));
         httpClient.execute(request);
     }
 
     @Override
     public void changePassword(Long userId, String currentPassword, String newPassword) {
-        var request = httpClient.preparePutRequest(USERS + "/" + userId + "/password", new ChangePassword(currentPassword, newPassword));
+        changePassword(UserId.of(userId), currentPassword, newPassword);
+    }
+
+    @Override
+    public void changePassword(UserId userId, String currentPassword, String newPassword) {
+        var request = httpClient.preparePutRequest(USERS + "/" + userId + "/password",
+                new ChangePassword(currentPassword, newPassword));
         httpClient.execute(request);
     }
 

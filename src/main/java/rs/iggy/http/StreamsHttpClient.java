@@ -1,6 +1,7 @@
 package rs.iggy.http;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import rs.iggy.identifier.StreamId;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
 import rs.iggy.stream.StreamsClient;
@@ -8,8 +9,8 @@ import java.util.List;
 
 class StreamsHttpClient implements StreamsClient {
 
-    private final HttpClient httpClient;
     private static final String STREAMS = "/streams";
+    private final HttpClient httpClient;
 
     public StreamsHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
@@ -17,6 +18,11 @@ class StreamsHttpClient implements StreamsClient {
 
     @Override
     public StreamDetails getStream(Long streamId) {
+        return getStream(StreamId.of(streamId));
+    }
+
+    @Override
+    public StreamDetails getStream(StreamId streamId) {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId);
         return httpClient.execute(request, StreamDetails.class);
     }
@@ -36,12 +42,22 @@ class StreamsHttpClient implements StreamsClient {
 
     @Override
     public void updateStream(Long streamId, String name) {
+        updateStream(StreamId.of(streamId), name);
+    }
+
+    @Override
+    public void updateStream(StreamId streamId, String name) {
         var request = httpClient.preparePutRequest(STREAMS + "/" + streamId, new UpdateStream(name));
         httpClient.execute(request);
     }
 
     @Override
     public void deleteStream(Long streamId) {
+        deleteStream(StreamId.of(streamId));
+    }
+
+    @Override
+    public void deleteStream(StreamId streamId) {
         var request = httpClient.prepareDeleteRequest(STREAMS + "/" + streamId);
         httpClient.execute(request);
     }

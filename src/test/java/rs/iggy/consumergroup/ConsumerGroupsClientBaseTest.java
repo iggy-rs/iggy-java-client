@@ -3,6 +3,9 @@ package rs.iggy.consumergroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.iggy.IntegrationTest;
+import rs.iggy.identifier.ConsumerGroupId;
+import rs.iggy.identifier.StreamId;
+import rs.iggy.identifier.TopicId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
@@ -49,7 +52,8 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
         assert consumerGroup != null;
 
         // when
-        consumerGroupsClient.deleteConsumerGroup(42L, 42L, "consumer-group-42");
+        consumerGroupsClient.deleteConsumerGroup(StreamId.of(42L), TopicId.of(42L),
+                ConsumerGroupId.of("consumer-group-42"));
 
         // then
         assertThat(consumerGroupsClient.getConsumerGroups(42L, 42L)).isEmpty();
