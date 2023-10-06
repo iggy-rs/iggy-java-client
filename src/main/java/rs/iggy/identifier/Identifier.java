@@ -1,13 +1,14 @@
 package rs.iggy.identifier;
 
 import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nullable;
 
 abstract class Identifier {
 
     private final String name;
     private final Long id;
 
-    protected Identifier(String name, Long id) {
+    protected Identifier(@Nullable String name, @Nullable Long id) {
         if (StringUtils.isBlank(name) && id == null) {
             throw new IllegalArgumentException("Name and id cannot be blank");
         }

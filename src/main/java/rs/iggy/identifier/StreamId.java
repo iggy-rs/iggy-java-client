@@ -1,8 +1,10 @@
 package rs.iggy.identifier;
 
+import javax.annotation.Nullable;
+
 public class StreamId extends Identifier {
 
-    private StreamId(String name, Long id) {
+    private StreamId(@Nullable String name, @Nullable Long id) {
         super(name, id);
     }
 

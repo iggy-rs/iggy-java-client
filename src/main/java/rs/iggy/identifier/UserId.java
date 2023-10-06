@@ -1,8 +1,10 @@
 package rs.iggy.identifier;
 
+import javax.annotation.Nullable;
+
 public class UserId extends Identifier {
 
-    private UserId(String name, Long id) {
+    private UserId(@Nullable String name, @Nullable Long id) {
         super(name, id);
     }
 

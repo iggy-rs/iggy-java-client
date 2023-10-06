@@ -1,8 +1,10 @@
 package rs.iggy.identifier;
 
+import javax.annotation.Nullable;
+
 public class TopicId extends Identifier {
 
-    private TopicId(String name, Long id) {
+    private TopicId(@Nullable String name, @Nullable Long id) {
         super(name, id);
     }
 

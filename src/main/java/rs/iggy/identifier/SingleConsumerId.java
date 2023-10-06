@@ -1,8 +1,10 @@
 package rs.iggy.identifier;
 
+import javax.annotation.Nullable;
+
 final public class SingleConsumerId extends ConsumerId {
 
-    private SingleConsumerId(String name, Long id) {
+    private SingleConsumerId(@Nullable String name, @Nullable Long id) {
         super(name, id);
     }
 
