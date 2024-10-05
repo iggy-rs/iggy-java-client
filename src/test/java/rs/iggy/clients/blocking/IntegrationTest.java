@@ -5,7 +5,10 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import rs.iggy.topic.CompressionAlgorithm;
+import java.math.BigInteger;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @Testcontainers
 public abstract class IntegrationTest {
@@ -27,12 +30,20 @@ public abstract class IntegrationTest {
     abstract protected IggyClient getClient();
 
     protected void setUpStream() {
-        client.streams().createStream(42L, "test-stream");
+        client.streams().createStream(of(42L), "test-stream");
     }
 
     protected void setUpStreamAndTopic() {
         setUpStream();
-        client.topics().createTopic(42L, 42L, 1L, empty(), "test-topic");
+        client.topics()
+                .createTopic(42L,
+                        of(42L),
+                        1L,
+                        CompressionAlgorithm.none,
+                        BigInteger.ZERO,
+                        BigInteger.ZERO,
+                        empty(),
+                        "test-topic");
     }
 
     protected void login() {

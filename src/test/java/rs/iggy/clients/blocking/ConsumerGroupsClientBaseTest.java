@@ -6,6 +6,7 @@ import rs.iggy.consumergroup.ConsumerGroup;
 import rs.iggy.identifier.ConsumerGroupId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
@@ -25,10 +26,17 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
         setUpStreamAndTopic();
 
         // when
-        consumerGroupsClient.createConsumerGroup(42L, 42L, 42L, "consumer-group-42");
+        consumerGroupsClient.createConsumerGroup(42L,
+                42L,
+                Optional.of(42L),
+                "consumer-group-42");
 
-        var consumerGroupById = consumerGroupsClient.getConsumerGroup(42L, 42L, 42L);
-        var consumerGroupByName = consumerGroupsClient.getConsumerGroup(42L, 42L, 42L);
+        var consumerGroupById = consumerGroupsClient.getConsumerGroup(StreamId.of(42L),
+                TopicId.of(42L),
+                ConsumerGroupId.of(42L));
+        var consumerGroupByName = consumerGroupsClient.getConsumerGroup(StreamId.of(42L),
+                TopicId.of(42L),
+                ConsumerGroupId.of("consumer-group-42"));
 
         // then
         assertThat(consumerGroupById).isNotNull();
@@ -47,7 +55,7 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
     void shouldDeleteConsumerGroupByName() {
         // given
         setUpStreamAndTopic();
-        consumerGroupsClient.createConsumerGroup(42L, 42L, 42L, "consumer-group-42");
+        consumerGroupsClient.createConsumerGroup(42L, 42L, Optional.of(42L), "consumer-group-42");
         var consumerGroup = consumerGroupsClient.getConsumerGroup(42L, 42L, 42L);
         assert consumerGroup != null;
 
@@ -64,9 +72,9 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
         // given
         setUpStreamAndTopic();
 
-        consumerGroupsClient.createConsumerGroup(42L, 42L, 42L, "consumer-group-42");
-        consumerGroupsClient.createConsumerGroup(42L, 42L, 43L, "consumer-group-43");
-        consumerGroupsClient.createConsumerGroup(42L, 42L, 44L, "consumer-group-44");
+        consumerGroupsClient.createConsumerGroup(42L, 42L, Optional.of(42L), "consumer-group-42");
+        consumerGroupsClient.createConsumerGroup(42L, 42L, Optional.of(43L), "consumer-group-43");
+        consumerGroupsClient.createConsumerGroup(42L, 42L, Optional.of(44L), "consumer-group-44");
 
         // when
         var consumerGroups = consumerGroupsClient.getConsumerGroups(42L, 42L);

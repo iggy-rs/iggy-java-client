@@ -90,7 +90,7 @@ class UsersHttpClient implements UsersClient {
     public IdentityInfo login(String username, String password) {
         var request = httpClient.preparePostRequest(USERS + "/login", new Login(username, password));
         var response = httpClient.execute(request, IdentityInfo.class);
-        httpClient.setToken(response.tokens().map(IdentityTokens::accessToken).map(TokenInfo::token));
+        httpClient.setToken(response.accessToken().map(TokenInfo::token));
         return response;
     }
 

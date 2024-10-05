@@ -2,6 +2,7 @@ package rs.iggy.clients.blocking;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class StreamClientBaseTest extends IntegrationTest {
@@ -18,7 +19,7 @@ public abstract class StreamClientBaseTest extends IntegrationTest {
     @Test
     void shouldCreateAndDeleteStream() {
         // when
-        streamsClient.createStream(42L, "test-stream");
+        streamsClient.createStream(Optional.of(42L), "test-stream");
         var stream = streamsClient.getStream(42L);
 
         // then

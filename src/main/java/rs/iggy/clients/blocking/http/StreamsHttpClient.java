@@ -6,6 +6,7 @@ import rs.iggy.identifier.StreamId;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
 import java.util.List;
+import java.util.Optional;
 
 class StreamsHttpClient implements StreamsClient {
 
@@ -35,7 +36,7 @@ class StreamsHttpClient implements StreamsClient {
     }
 
     @Override
-    public void createStream(Long streamId, String name) {
+    public void createStream(Optional<Long> streamId, String name) {
         var request = httpClient.preparePostRequest(STREAMS, new CreateStream(streamId, name));
         httpClient.execute(request);
     }
@@ -62,7 +63,7 @@ class StreamsHttpClient implements StreamsClient {
         httpClient.execute(request);
     }
 
-    record CreateStream(Long streamId, String name) {
+    record CreateStream(Optional<Long> streamId, String name) {
     }
 
     record UpdateStream(String name) {

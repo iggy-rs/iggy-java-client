@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import rs.iggy.clients.blocking.TopicsClient;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
+import rs.iggy.topic.CompressionAlgorithm;
 import rs.iggy.topic.Topic;
 import rs.iggy.topic.TopicDetails;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,14 +45,41 @@ class TopicsHttpClient implements TopicsClient {
     }
 
     @Override
-    public void createTopic(Long streamId, Long topicId, Long partitionsCount, Optional<Long> messageExpiry, String name) {
-        createTopic(StreamId.of(streamId), topicId, partitionsCount, messageExpiry, name);
+    public void createTopic(Long streamId,
+                            Optional<Long> topicId,
+                            Long partitionsCount,
+                            CompressionAlgorithm compressionAlgorithm,
+                            BigInteger messageExpiry,
+                            BigInteger maxTopicSize,
+                            Optional<Short> replicationFactor,
+                            String name) {
+        createTopic(StreamId.of(streamId),
+                topicId,
+                partitionsCount,
+                compressionAlgorithm,
+                messageExpiry,
+                maxTopicSize,
+                replicationFactor,
+                name);
     }
 
     @Override
-    public void createTopic(StreamId streamId, Long topicId, Long partitionsCount, Optional<Long> messageExpiry, String name) {
+    public void createTopic(StreamId streamId,
+                            Optional<Long> topicId,
+                            Long partitionsCount,
+                            CompressionAlgorithm compressionAlgorithm,
+                            BigInteger messageExpiry,
+                            BigInteger maxTopicSize,
+                            Optional<Short> replicationFactor,
+                            String name) {
         var request = httpClient.preparePostRequest(STREAMS + "/" + streamId + TOPICS,
-                new CreateTopic(topicId, partitionsCount, messageExpiry, name));
+                new CreateTopic(topicId,
+                        partitionsCount,
+                        compressionAlgorithm,
+                        messageExpiry,
+                        maxTopicSize,
+                        replicationFactor,
+                        name));
         httpClient.execute(request);
     }
 
@@ -77,7 +106,15 @@ class TopicsHttpClient implements TopicsClient {
         httpClient.execute(request);
     }
 
-    record CreateTopic(Long topicId, Long partitionsCount, Optional<Long> messageExpiry, String name) {
+    record CreateTopic(
+            Optional<Long> topicId,
+            Long partitionsCount,
+            CompressionAlgorithm compressionAlgorithm,
+            BigInteger messageExpiry,
+            BigInteger maxTopicSize,
+            Optional<Short> replicationFactor,
+            String name
+    ) {
     }
 
     record UpdateTopic(Optional<Long> messageExpiry, String name) {

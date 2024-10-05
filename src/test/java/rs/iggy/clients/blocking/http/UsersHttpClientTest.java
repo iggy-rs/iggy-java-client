@@ -20,9 +20,8 @@ class UsersHttpClientTest extends UsersClientBaseTest {
 
         // then
         assertThat(identityInfo).isNotNull();
-        assertThat(identityInfo.tokens()).isPresent();
-        assertThat(identityInfo.tokens().get().accessToken().token()).isNotBlank();
-        assertThat(identityInfo.tokens().get().refreshToken().token()).isNotBlank();
+        assertThat(identityInfo.accessToken()).isPresent();
+        assertThat(identityInfo.accessToken().get().token()).isNotBlank();
     }
 
 }

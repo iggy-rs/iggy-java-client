@@ -8,7 +8,7 @@ public record StreamDetails(
         Long id,
         BigInteger createdAt,
         String name,
-        BigInteger sizeBytes,
+        String size,
         BigInteger messagesCount,
         Long topicsCount,
         List<Topic> topics

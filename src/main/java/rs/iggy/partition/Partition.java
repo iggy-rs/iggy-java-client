@@ -7,7 +7,7 @@ public record Partition(
         BigInteger createdAt,
         Long segmentsCount,
         BigInteger currentOffset,
-        BigInteger sizeBytes,
+        String size,
         BigInteger messagesCount
 ) {
 }

@@ -6,6 +6,7 @@ import rs.iggy.identifier.ConsumerGroupId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.util.List;
+import java.util.Optional;
 
 public interface ConsumerGroupsClient {
 
@@ -17,9 +18,9 @@ public interface ConsumerGroupsClient {
 
     List<ConsumerGroup> getConsumerGroups(StreamId streamId, TopicId topicId);
 
-    void createConsumerGroup(Long streamId, Long topicId, Long consumerGroupId, String consumerGroupName);
+    ConsumerGroupDetails createConsumerGroup(Long streamId, Long topicId, Optional<Long> consumerGroupId, String consumerGroupName);
 
-    void createConsumerGroup(StreamId streamId, TopicId topicId, Long consumerGroupId, String consumerGroupName);
+    ConsumerGroupDetails createConsumerGroup(StreamId streamId, TopicId topicId, Optional<Long> consumerGroupId, String consumerGroupName);
 
     void deleteConsumerGroup(Long streamId, Long topicId, Long consumerGroupId);
 

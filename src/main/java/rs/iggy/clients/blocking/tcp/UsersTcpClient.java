@@ -84,13 +84,19 @@ class UsersTcpClient implements UsersClient {
 
     @Override
     public IdentityInfo login(String username, String password) {
-        var payloadSize = 2 + username.length() + password.length();
+        String version = "0.0.1"; //TODO(mm): 5.10.2024 replace version and context
+        String context = "java-sdk";
+        var payloadSize = 2 + username.length() + password.length() + 4 + version.length() + 4 + context.length();
         var payload = Unpooled.buffer(payloadSize);
 
         payload.writeByte(username.length());
         payload.writeBytes(username.getBytes());
         payload.writeByte(password.length());
         payload.writeBytes(password.getBytes());
+        payload.writeIntLE(version.length());
+        payload.writeBytes(version.getBytes());
+        payload.writeIntLE(context.length());
+        payload.writeBytes(context.getBytes());
 
         var response = sendWithResponse(LOGIN_USER_CODE, payload);
 

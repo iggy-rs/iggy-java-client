@@ -4,6 +4,7 @@ import rs.iggy.identifier.StreamId;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
 import java.util.List;
+import java.util.Optional;
 
 public interface StreamsClient {
 
@@ -13,7 +14,7 @@ public interface StreamsClient {
 
     List<StreamBase> getStreams();
 
-    void createStream(Long streamId, String name);
+    void createStream(Optional<Long> streamId, String name);
 
     void updateStream(Long streamId, String name);
 
