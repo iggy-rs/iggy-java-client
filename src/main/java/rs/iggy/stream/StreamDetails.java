@@ -13,4 +13,7 @@ public record StreamDetails(
         Long topicsCount,
         List<Topic> topics
 ) {
+    public StreamDetails(StreamBase base, List<Topic> topics) {
+        this(base.id(), base.createdAt(), base.name(), base.size(), base.messagesCount(), base.topicsCount(), topics);
+    }
 }

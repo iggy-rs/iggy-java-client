@@ -92,7 +92,7 @@ class UsersTcpClient implements UsersClient {
         payload.writeIntLE(context.length());
         payload.writeBytes(context.getBytes());
 
-        var response = connection.sendWithResponse(LOGIN_USER_CODE, payload);
+        var response = connection.send(LOGIN_USER_CODE, payload);
 
         var userId = response.readUnsignedIntLE();
         return new IdentityInfo(userId, Optional.empty());

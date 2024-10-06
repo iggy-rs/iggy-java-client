@@ -6,7 +6,7 @@ public record StreamBase(
         Long id,
         BigInteger createdAt,
         String name,
-        BigInteger sizeBytes,
+        String size,
         BigInteger messagesCount,
         Long topicsCount
 ) {

@@ -28,11 +28,32 @@ public abstract class StreamClientBaseTest extends IntegrationTest {
         assertThat(stream.name()).isEqualTo("test-stream");
 
         // when
-        streamsClient.deleteStream(42L);
         var streams = streamsClient.getStreams();
+
+        // then
+        assertThat(streams).hasSize(1);
+
+        // when
+        streamsClient.deleteStream(42L);
+        streams = streamsClient.getStreams();
 
         // then
         assertThat(streams).isEmpty();
     }
 
+    @Test
+    void shouldUpdateStream() {
+        // given
+        streamsClient.createStream(Optional.of(42L), "test-stream");
+
+        // when
+        streamsClient.updateStream(42L, "test-stream-new");
+
+        // then
+        var stream = streamsClient.getStream(42L);
+
+        assertThat(stream).isNotNull();
+        assertThat(stream.id()).isEqualTo(42L);
+        assertThat(stream.name()).isEqualTo("test-stream-new");
+    }
 }

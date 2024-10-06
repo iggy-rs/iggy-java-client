@@ -5,6 +5,9 @@ import io.netty.buffer.Unpooled;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 import reactor.netty.tcp.TcpClient;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 
 final class TcpConnectionHandler {
 
@@ -13,12 +16,22 @@ final class TcpConnectionHandler {
     private static final int RESPONSE_INITIAL_BYTES_LENGTH = 8;
 
     private final Connection connection;
+    private final Queue<byte[]> responses = new ConcurrentLinkedQueue<>();
+    private final Semaphore semaphore = new Semaphore(0);
 
     TcpConnectionHandler(String host, Integer port) {
         this.connection = TcpClient.create().host(host).port(port).connectNow();
+        this.connection.inbound().receive().asByteArray().subscribe(response -> {
+            responses.add(response);
+            semaphore.release();
+        });
     }
 
-    void send(int command, ByteBuf payload) {
+    ByteBuf send(int command) {
+        return send(command, Unpooled.EMPTY_BUFFER);
+    }
+
+    ByteBuf send(int command, ByteBuf payload) {
         var payloadSize = payload.readableBytes() + COMMAND_LENGTH;
         var buffer = Unpooled.buffer(REQUEST_INITIAL_BYTES_LENGTH + payloadSize);
         buffer.writeIntLE(payloadSize);
@@ -26,11 +39,12 @@ final class TcpConnectionHandler {
         buffer.writeBytes(payload);
 
         connection.outbound().send(Mono.just(buffer)).then().block();
-    }
-
-    ByteBuf sendWithResponse(int command, ByteBuf payload) {
-        send(command, payload);
-        var response = connection.inbound().receive().asByteArray().blockFirst();
+        try { //TODO(mm): 6.10.2024 validate approach and error handling
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        var response = responses.poll();
         if (response == null) {
             throw new RuntimeException("No response");
         }

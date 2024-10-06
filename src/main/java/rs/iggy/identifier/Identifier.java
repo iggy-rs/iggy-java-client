@@ -3,7 +3,7 @@ package rs.iggy.identifier;
 import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 
-abstract class Identifier {
+public abstract class Identifier {
 
     private final String name;
     private final Long id;
@@ -30,6 +30,21 @@ abstract class Identifier {
             return name;
         }
         return id.toString();
+    }
+
+    public int getKind() {
+        if (id != null) {
+            return 1;
+        }
+        return 2;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

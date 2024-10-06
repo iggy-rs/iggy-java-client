@@ -36,9 +36,10 @@ class StreamsHttpClient implements StreamsClient {
     }
 
     @Override
-    public void createStream(Optional<Long> streamId, String name) {
+    public StreamDetails createStream(Optional<Long> streamId, String name) {
         var request = httpClient.preparePostRequest(STREAMS, new CreateStream(streamId, name));
-        httpClient.execute(request);
+        return httpClient.execute(request, new TypeReference<>() {
+        });
     }
 
     @Override

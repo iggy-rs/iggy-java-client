@@ -14,7 +14,7 @@ public interface StreamsClient {
 
     List<StreamBase> getStreams();
 
-    void createStream(Optional<Long> streamId, String name);
+    StreamDetails createStream(Optional<Long> streamId, String name);
 
     void updateStream(Long streamId, String name);
 
