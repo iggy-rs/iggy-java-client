@@ -1,16 +1,16 @@
 package rs.iggy.clients.blocking.tcp;
 
-import reactor.netty.Connection;
-import reactor.netty.tcp.TcpClient;
 import rs.iggy.clients.blocking.*;
 
 public class IggyTcpClient implements IggyClient {
 
     private final UsersTcpClient usersClient;
+    private final StreamsTcpClient streamsClient;
 
     public IggyTcpClient(String host, Integer port) {
-        Connection tcpConnection = TcpClient.create().host(host).port(port).connectNow();
-        usersClient = new UsersTcpClient(tcpConnection);
+        TcpConnectionHandler connection = new TcpConnectionHandler(host, port);
+        usersClient = new UsersTcpClient(connection);
+        streamsClient = new StreamsTcpClient(connection);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class IggyTcpClient implements IggyClient {
 
     @Override
     public StreamsClient streams() {
-        throw new UnsupportedOperationException();
+        return streamsClient;
     }
 
     @Override

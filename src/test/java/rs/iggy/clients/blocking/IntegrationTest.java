@@ -17,7 +17,7 @@ public abstract class IntegrationTest {
     public static final int TCP_PORT = 8090;
 
     @Container
-    protected final GenericContainer<?> iggyServer = new GenericContainer(DockerImageName.parse("iggyrs/iggy:latest"))
+    protected final GenericContainer<?> iggyServer = new GenericContainer<>(DockerImageName.parse("iggyrs/iggy:latest"))
             .withExposedPorts(HTTP_PORT, TCP_PORT);
 
     protected IggyClient client;
