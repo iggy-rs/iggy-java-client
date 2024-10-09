@@ -41,7 +41,7 @@ public interface TopicsClient {
                 name);
     }
 
-    void createTopic(StreamId streamId,
+    TopicDetails createTopic(StreamId streamId,
                      Optional<Long> topicId,
                      Long partitionsCount,
                      CompressionAlgorithm compressionAlgorithm,

@@ -50,7 +50,7 @@ class TopicsTcpClient implements TopicsClient {
     }
 
     @Override
-    public void createTopic(StreamId streamId, Optional<Long> topicId, Long partitionsCount, CompressionAlgorithm compressionAlgorithm, BigInteger messageExpiry, BigInteger maxTopicSize, Optional<Short> replicationFactor, String name) {
+    public TopicDetails createTopic(StreamId streamId, Optional<Long> topicId, Long partitionsCount, CompressionAlgorithm compressionAlgorithm, BigInteger messageExpiry, BigInteger maxTopicSize, Optional<Short> replicationFactor, String name) {
         var streamIdBytes = toBytes(streamId);
         var payload = Unpooled.buffer(23 + streamIdBytes.capacity() + name.length());
 
@@ -64,7 +64,7 @@ class TopicsTcpClient implements TopicsClient {
         payload.writeBytes(nameToBytes(name));
 
         var response = connection.send(CREATE_TOPIC_CODE, payload);
-        //TODO(mm): 9.10.2024 return topic details
+        return readTopicDetails(response);
     }
 
 
