@@ -4,6 +4,9 @@ import io.netty.buffer.ByteBuf;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rs.iggy.consumergroup.ConsumerGroup;
+import rs.iggy.consumergroup.ConsumerGroupDetails;
+import rs.iggy.consumergroup.ConsumerGroupMember;
 import rs.iggy.partition.Partition;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
@@ -79,6 +82,26 @@ final class BytesDeserializer {
                 (short) replicationFactor,
                 messagesCount,
                 partitionsCount);
+    }
+
+    public static ConsumerGroupDetails readConsumerGroupDetails(ByteBuf response) {
+        var consumerGroup = readConsumerGroup(response);
+
+        List<ConsumerGroupMember> members = new ArrayList<>();
+        if (response.isReadable()) {
+            log.debug("has more data"); //TODO(mm): 9.10.2024 add consumer group members
+        }
+
+        return new ConsumerGroupDetails(consumerGroup, members);
+    }
+
+    public static ConsumerGroup readConsumerGroup(ByteBuf response) {
+        var groupId = response.readUnsignedIntLE();
+        var partitionsCount = response.readUnsignedIntLE();
+        var membersCount = response.readUnsignedIntLE();
+        var nameLength = response.readByte();
+        var name = response.readCharSequence(nameLength, StandardCharsets.UTF_8).toString();
+        return new ConsumerGroup(groupId, name, partitionsCount, membersCount);
     }
 
     private static BigInteger readU64AsBigInteger(ByteBuf buffer) {

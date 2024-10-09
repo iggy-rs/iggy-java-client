@@ -9,4 +9,11 @@ public record ConsumerGroupDetails(
         Long membersCount,
         List<ConsumerGroupMember> members
 ) {
+    public ConsumerGroupDetails(ConsumerGroup consumerGroup, List<ConsumerGroupMember> members) {
+        this(consumerGroup.id(),
+                consumerGroup.name(),
+                consumerGroup.partitionsCount(),
+                consumerGroup.membersCount(),
+                members);
+    }
 }

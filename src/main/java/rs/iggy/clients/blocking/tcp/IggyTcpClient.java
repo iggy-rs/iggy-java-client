@@ -8,6 +8,7 @@ public class IggyTcpClient implements IggyClient {
     private final StreamsTcpClient streamsClient;
     private final TopicsTcpClient topicsClient;
     private final PartitionsTcpClient partitionsClient;
+    private final ConsumerGroupsTcpClient consumerGroupsClient;
 
     public IggyTcpClient(String host, Integer port) {
         TcpConnectionHandler connection = new TcpConnectionHandler(host, port);
@@ -15,6 +16,7 @@ public class IggyTcpClient implements IggyClient {
         streamsClient = new StreamsTcpClient(connection);
         topicsClient = new TopicsTcpClient(connection);
         partitionsClient = new PartitionsTcpClient(connection);
+        consumerGroupsClient = new ConsumerGroupsTcpClient(connection);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class IggyTcpClient implements IggyClient {
 
     @Override
     public ConsumerGroupsClient consumerGroups() {
-        throw new UnsupportedOperationException();
+        return consumerGroupsClient;
     }
 
     @Override

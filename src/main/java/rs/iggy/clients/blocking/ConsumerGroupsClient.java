@@ -10,28 +10,40 @@ import java.util.Optional;
 
 public interface ConsumerGroupsClient {
 
-    ConsumerGroupDetails getConsumerGroup(Long streamId, Long topicId, Long consumerGroupId);
+    default ConsumerGroupDetails getConsumerGroup(Long streamId, Long topicId, Long groupId) {
+        return getConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), ConsumerGroupId.of(groupId));
+    }
 
-    ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId consumerGroupId);
+    ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId);
 
-    List<ConsumerGroup> getConsumerGroups(Long streamId, Long topicId);
+    default List<ConsumerGroup> getConsumerGroups(Long streamId, Long topicId) {
+        return getConsumerGroups(StreamId.of(streamId), TopicId.of(topicId));
+    }
 
     List<ConsumerGroup> getConsumerGroups(StreamId streamId, TopicId topicId);
 
-    ConsumerGroupDetails createConsumerGroup(Long streamId, Long topicId, Optional<Long> consumerGroupId, String consumerGroupName);
+    default ConsumerGroupDetails createConsumerGroup(Long streamId, Long topicId, Optional<Long> groupId, String name) {
+        return createConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), groupId, name);
+    }
 
-    ConsumerGroupDetails createConsumerGroup(StreamId streamId, TopicId topicId, Optional<Long> consumerGroupId, String consumerGroupName);
+    ConsumerGroupDetails createConsumerGroup(StreamId streamId, TopicId topicId, Optional<Long> groupId, String name);
 
-    void deleteConsumerGroup(Long streamId, Long topicId, Long consumerGroupId);
+    default void deleteConsumerGroup(Long streamId, Long topicId, Long groupId) {
+        deleteConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), ConsumerGroupId.of(groupId));
+    }
 
-    void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId consumerGroupId);
+    void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId);
 
-    void joinConsumerGroup(Long streamId, Long topicId, Long consumerGroupId);
+    default void joinConsumerGroup(Long streamId, Long topicId, Long groupId) {
+        joinConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), ConsumerGroupId.of(groupId));
+    }
 
-    void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId consumerGroupId);
+    void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId);
 
-    void leaveConsumerGroup(Long streamId, Long topicId, Long consumerGroupId);
+    default void leaveConsumerGroup(Long streamId, Long topicId, Long groupId) {
+        leaveConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), ConsumerGroupId.of(groupId));
+    }
 
-    void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId consumerGroupId);
+    void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId);
 
 }
