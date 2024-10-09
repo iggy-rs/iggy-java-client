@@ -17,20 +17,10 @@ class PartitionsHttpClient implements PartitionsClient {
     }
 
     @Override
-    public void createPartitions(Long streamId, Long topicId, Long partitionsCount) {
-        createPartitions(StreamId.of(streamId), TopicId.of(topicId), partitionsCount);
-    }
-
-    @Override
     public void createPartitions(StreamId streamId, TopicId topicId, Long partitionsCount) {
         var request = httpClient.preparePostRequest(STREAMS + "/" + streamId + TOPICS + "/" + topicId + PARTITIONS,
                 new CreatePartitions(partitionsCount));
         httpClient.execute(request);
-    }
-
-    @Override
-    public void deletePartitions(Long streamId, Long topicId, Long partitionsCount) {
-        deletePartitions(StreamId.of(streamId), TopicId.of(topicId), partitionsCount);
     }
 
     @Override
