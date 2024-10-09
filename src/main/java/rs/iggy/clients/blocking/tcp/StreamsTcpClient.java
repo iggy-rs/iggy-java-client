@@ -39,11 +39,6 @@ class StreamsTcpClient implements StreamsClient {
     }
 
     @Override
-    public StreamDetails getStream(Long streamId) {
-        return getStream(StreamId.of(streamId));
-    }
-
-    @Override
     public StreamDetails getStream(StreamId streamId) {
         var payload = toBytes(streamId);
         var response = connection.send(GET_STREAM_CODE, payload);
@@ -61,11 +56,6 @@ class StreamsTcpClient implements StreamsClient {
     }
 
     @Override
-    public void updateStream(Long streamId, String name) {
-        updateStream(StreamId.of(streamId), name);
-    }
-
-    @Override
     public void updateStream(StreamId streamId, String name) {
         var payloadSize = 1 + name.length();
         var idBytes = toBytes(streamId);
@@ -74,11 +64,6 @@ class StreamsTcpClient implements StreamsClient {
         payload.writeBytes(idBytes);
         payload.writeBytes(nameToBytes(name));
         connection.send(UPDATE_STREAM_CODE, payload);
-    }
-
-    @Override
-    public void deleteStream(Long streamId) {
-        deleteStream(StreamId.of(streamId));
     }
 
     @Override

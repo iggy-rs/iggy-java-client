@@ -18,11 +18,6 @@ class StreamsHttpClient implements StreamsClient {
     }
 
     @Override
-    public StreamDetails getStream(Long streamId) {
-        return getStream(StreamId.of(streamId));
-    }
-
-    @Override
     public StreamDetails getStream(StreamId streamId) {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId);
         return httpClient.execute(request, StreamDetails.class);
@@ -43,19 +38,9 @@ class StreamsHttpClient implements StreamsClient {
     }
 
     @Override
-    public void updateStream(Long streamId, String name) {
-        updateStream(StreamId.of(streamId), name);
-    }
-
-    @Override
     public void updateStream(StreamId streamId, String name) {
         var request = httpClient.preparePutRequest(STREAMS + "/" + streamId, new UpdateStream(name));
         httpClient.execute(request);
-    }
-
-    @Override
-    public void deleteStream(Long streamId) {
-        deleteStream(StreamId.of(streamId));
     }
 
     @Override

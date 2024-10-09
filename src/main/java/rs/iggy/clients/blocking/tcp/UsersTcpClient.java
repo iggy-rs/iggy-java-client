@@ -17,11 +17,6 @@ class UsersTcpClient implements UsersClient {
     }
 
     @Override
-    public UserInfoDetails getUser(Long userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public UserInfoDetails getUser(UserId userId) {
         throw new UnsupportedOperationException();
     }
@@ -37,17 +32,7 @@ class UsersTcpClient implements UsersClient {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void deleteUser(UserId userId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void updateUser(Long userId, Optional<String> username, Optional<UserStatus> status) {
         throw new UnsupportedOperationException();
     }
 
@@ -57,17 +42,7 @@ class UsersTcpClient implements UsersClient {
     }
 
     @Override
-    public void updatePermissions(Long userId, Optional<Permissions> permissions) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void updatePermissions(UserId userId, Optional<Permissions> permissions) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void changePassword(Long userId, String currentPassword, String newPassword) {
         throw new UnsupportedOperationException();
     }
 

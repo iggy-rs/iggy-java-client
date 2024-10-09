@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface StreamsClient {
 
-    StreamDetails getStream(Long streamId);
+    default StreamDetails getStream(Long streamId) {
+        return getStream(StreamId.of(streamId));
+    }
 
     StreamDetails getStream(StreamId streamId);
 
@@ -16,11 +18,15 @@ public interface StreamsClient {
 
     StreamDetails createStream(Optional<Long> streamId, String name);
 
-    void updateStream(Long streamId, String name);
+    default void updateStream(Long streamId, String name) {
+        updateStream(StreamId.of(streamId), name);
+    }
 
     void updateStream(StreamId streamId, String name);
 
-    void deleteStream(Long streamId);
+    default void deleteStream(Long streamId) {
+        deleteStream(StreamId.of(streamId));
+    }
 
     void deleteStream(StreamId streamId);
 

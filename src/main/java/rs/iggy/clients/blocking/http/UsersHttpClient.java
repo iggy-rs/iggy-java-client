@@ -17,11 +17,6 @@ class UsersHttpClient implements UsersClient {
     }
 
     @Override
-    public UserInfoDetails getUser(Long userId) {
-        return getUser(UserId.of(userId));
-    }
-
-    @Override
     public UserInfoDetails getUser(UserId userId) {
         var request = httpClient.prepareGetRequest(USERS + "/" + userId);
         return httpClient.execute(request, UserInfoDetails.class);
@@ -41,19 +36,9 @@ class UsersHttpClient implements UsersClient {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        deleteUser(UserId.of(userId));
-    }
-
-    @Override
     public void deleteUser(UserId userId) {
         var request = httpClient.prepareDeleteRequest(USERS + "/" + userId);
         httpClient.execute(request);
-    }
-
-    @Override
-    public void updateUser(Long userId, Optional<String> username, Optional<UserStatus> status) {
-        updateUser(UserId.of(userId), username, status);
     }
 
     @Override
@@ -63,20 +48,10 @@ class UsersHttpClient implements UsersClient {
     }
 
     @Override
-    public void updatePermissions(Long userId, Optional<Permissions> permissions) {
-        updatePermissions(UserId.of(userId), permissions);
-    }
-
-    @Override
     public void updatePermissions(UserId userId, Optional<Permissions> permissions) {
         var request = httpClient.preparePutRequest(USERS + "/" + userId + "/permissions",
                 new UpdatePermissions(permissions));
         httpClient.execute(request);
-    }
-
-    @Override
-    public void changePassword(Long userId, String currentPassword, String newPassword) {
-        changePassword(UserId.of(userId), currentPassword, newPassword);
     }
 
     @Override
