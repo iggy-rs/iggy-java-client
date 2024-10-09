@@ -6,6 +6,7 @@ import rs.iggy.identifier.UserId;
 import rs.iggy.user.*;
 import java.util.List;
 import java.util.Optional;
+import static rs.iggy.clients.blocking.tcp.BytesSerializer.nameToBytes;
 
 class UsersTcpClient implements UsersClient {
 
@@ -58,10 +59,8 @@ class UsersTcpClient implements UsersClient {
         var payloadSize = 2 + username.length() + password.length() + 4 + version.length() + 4 + context.length();
         var payload = Unpooled.buffer(payloadSize);
 
-        payload.writeByte(username.length());
-        payload.writeBytes(username.getBytes());
-        payload.writeByte(password.length());
-        payload.writeBytes(password.getBytes());
+        payload.writeBytes(nameToBytes(username));
+        payload.writeBytes(nameToBytes(password));
         payload.writeIntLE(version.length());
         payload.writeBytes(version.getBytes());
         payload.writeIntLE(context.length());

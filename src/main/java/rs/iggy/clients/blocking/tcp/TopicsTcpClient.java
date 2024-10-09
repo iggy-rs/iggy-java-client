@@ -52,7 +52,7 @@ class TopicsTcpClient implements TopicsClient {
     @Override
     public TopicDetails createTopic(StreamId streamId, Optional<Long> topicId, Long partitionsCount, CompressionAlgorithm compressionAlgorithm, BigInteger messageExpiry, BigInteger maxTopicSize, Optional<Short> replicationFactor, String name) {
         var streamIdBytes = toBytes(streamId);
-        var payload = Unpooled.buffer(23 + streamIdBytes.capacity() + name.length());
+        var payload = Unpooled.buffer(27 + streamIdBytes.readableBytes() + name.length());
 
         payload.writeBytes(streamIdBytes);
         payload.writeIntLE(topicId.orElse(0L).intValue());
