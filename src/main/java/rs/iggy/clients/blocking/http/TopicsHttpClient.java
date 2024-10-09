@@ -22,19 +22,9 @@ class TopicsHttpClient implements TopicsClient {
     }
 
     @Override
-    public TopicDetails getTopic(Long streamId, Long topicId) {
-        return getTopic(StreamId.of(streamId), TopicId.of(topicId));
-    }
-
-    @Override
     public TopicDetails getTopic(StreamId streamId, TopicId topicId) {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId + TOPICS + "/" + topicId);
         return httpClient.execute(request, TopicDetails.class);
-    }
-
-    @Override
-    public List<Topic> getTopics(Long streamId) {
-        return getTopics(StreamId.of(streamId));
     }
 
     @Override
@@ -42,25 +32,6 @@ class TopicsHttpClient implements TopicsClient {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId + TOPICS);
         return httpClient.execute(request, new TypeReference<>() {
         });
-    }
-
-    @Override
-    public void createTopic(Long streamId,
-                            Optional<Long> topicId,
-                            Long partitionsCount,
-                            CompressionAlgorithm compressionAlgorithm,
-                            BigInteger messageExpiry,
-                            BigInteger maxTopicSize,
-                            Optional<Short> replicationFactor,
-                            String name) {
-        createTopic(StreamId.of(streamId),
-                topicId,
-                partitionsCount,
-                compressionAlgorithm,
-                messageExpiry,
-                maxTopicSize,
-                replicationFactor,
-                name);
     }
 
     @Override
@@ -84,20 +55,10 @@ class TopicsHttpClient implements TopicsClient {
     }
 
     @Override
-    public void updateTopic(Long streamId, Long topicId, Optional<Long> messageExpiry, String name) {
-        updateTopic(StreamId.of(streamId), TopicId.of(topicId), messageExpiry, name);
-    }
-
-    @Override
     public void updateTopic(StreamId streamId, TopicId topicId, Optional<Long> messageExpiry, String name) {
         var request = httpClient.preparePutRequest(STREAMS + "/" + streamId + TOPICS + "/" + topicId,
                 new UpdateTopic(messageExpiry, name));
         httpClient.execute(request);
-    }
-
-    @Override
-    public void deleteTopic(Long streamId, Long topicId) {
-        deleteTopic(StreamId.of(streamId), TopicId.of(topicId));
     }
 
     @Override

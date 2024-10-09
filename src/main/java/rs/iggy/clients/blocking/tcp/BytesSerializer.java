@@ -2,7 +2,9 @@ package rs.iggy.clients.blocking.tcp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.lang3.ArrayUtils;
 import rs.iggy.identifier.Identifier;
+import java.math.BigInteger;
 
 final class BytesSerializer {
 
@@ -25,6 +27,27 @@ final class BytesSerializer {
         } else {
             throw new IllegalArgumentException("Unknown identifier kind: " + identifier.getKind());
         }
+    }
+
+    static ByteBuf nameToBytes(String name) {
+        ByteBuf buffer = Unpooled.buffer(1 + name.length());
+        buffer.writeByte(name.length());
+        buffer.writeBytes(name.getBytes());
+        return buffer;
+    }
+
+    static ByteBuf toBytesAsU64(BigInteger value) {
+        ByteBuf buffer = Unpooled.buffer(8, 8);
+        byte[] valueAsBytes = value.toByteArray();
+        if (valueAsBytes.length > 8) {
+            throw new IllegalArgumentException();
+        }
+        ArrayUtils.reverse(valueAsBytes);
+        buffer.writeBytes(valueAsBytes);
+        if (valueAsBytes.length < 8) {
+            buffer.writeZero(8 - valueAsBytes.length);
+        }
+        return buffer;
     }
 
 }

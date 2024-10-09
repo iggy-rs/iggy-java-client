@@ -17,4 +17,17 @@ public record TopicDetails(
         Long partitionsCount,
         List<Partition> partitions
 ) {
+    public TopicDetails(Topic topic, List<Partition> partitions) {
+        this(topic.id(),
+                topic.createdAt(),
+                topic.name(),
+                topic.size(),
+                topic.messageExpiry(),
+                topic.compressionAlgorithm(),
+                topic.maxTopicSize(),
+                topic.replicationFactor(),
+                topic.messagesCount(),
+                topic.partitionsCount(),
+                partitions);
+    }
 }

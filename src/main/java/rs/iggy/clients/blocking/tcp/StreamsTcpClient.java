@@ -6,7 +6,12 @@ import rs.iggy.clients.blocking.StreamsClient;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import static rs.iggy.clients.blocking.tcp.BytesDeserializer.readStreamBase;
+import static rs.iggy.clients.blocking.tcp.BytesDeserializer.readStreamDetails;
+import static rs.iggy.clients.blocking.tcp.BytesSerializer.nameToBytes;
 import static rs.iggy.clients.blocking.tcp.BytesSerializer.toBytes;
 
 class StreamsTcpClient implements StreamsClient {
@@ -28,10 +33,9 @@ class StreamsTcpClient implements StreamsClient {
         var payload = Unpooled.buffer(payloadSize);
 
         payload.writeIntLE(streamId.orElse(0L).intValue());
-        payload.writeByte(name.length());
-        payload.writeBytes(name.getBytes());
+        payload.writeBytes(nameToBytes(name));
         var response = connection.send(CREATE_STREAM_CODE, payload);
-        return BytesDeserializer.readStreamDetails(response);
+        return readStreamDetails(response);
     }
 
     @Override
@@ -43,7 +47,7 @@ class StreamsTcpClient implements StreamsClient {
     public StreamDetails getStream(StreamId streamId) {
         var payload = toBytes(streamId);
         var response = connection.send(GET_STREAM_CODE, payload);
-        return BytesDeserializer.readStreamDetails(response);
+        return readStreamDetails(response);
     }
 
     @Override
@@ -51,7 +55,7 @@ class StreamsTcpClient implements StreamsClient {
         ByteBuf response = connection.send(GET_STREAMS_CODE);
         List<StreamBase> streams = new ArrayList<>();
         while (response.isReadable()) {
-            streams.add(BytesDeserializer.readStreamBase(response));
+            streams.add(readStreamBase(response));
         }
         return streams;
     }
@@ -68,8 +72,7 @@ class StreamsTcpClient implements StreamsClient {
         var payload = Unpooled.buffer(payloadSize + idBytes.capacity());
 
         payload.writeBytes(idBytes);
-        payload.writeByte(name.length());
-        payload.writeBytes(name.getBytes());
+        payload.writeBytes(nameToBytes(name));
         connection.send(UPDATE_STREAM_CODE, payload);
     }
 

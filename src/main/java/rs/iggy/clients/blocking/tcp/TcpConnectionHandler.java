@@ -62,7 +62,7 @@ final class TcpConnectionHandler {
         return handleResponse(status, responseLength, responseBuffer);
     }
 
-    ByteBuf handleResponse(long status, int responseLength, ByteBuf responseBuffer) {
+    private ByteBuf handleResponse(long status, int responseLength, ByteBuf responseBuffer) {
         if (status != 0) {
             throw new RuntimeException("Received an invalid response with status " + status);
         }

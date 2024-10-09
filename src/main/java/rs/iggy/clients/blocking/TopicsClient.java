@@ -11,22 +11,35 @@ import java.util.Optional;
 
 public interface TopicsClient {
 
-    TopicDetails getTopic(Long streamId, Long topicId);
+    default TopicDetails getTopic(Long streamId, Long topicId) {
+        return getTopic(StreamId.of(streamId), TopicId.of(topicId));
+    }
 
     TopicDetails getTopic(StreamId streamId, TopicId topicId);
 
-    List<Topic> getTopics(Long streamId);
+    default List<Topic> getTopics(Long streamId) {
+        return getTopics(StreamId.of(streamId));
+    }
 
     List<Topic> getTopics(StreamId streamId);
 
-    void createTopic(Long streamId,
-                     Optional<Long> topicId,
-                     Long partitionsCount,
-                     CompressionAlgorithm compressionAlgorithm,
-                     BigInteger messageExpiry,
-                     BigInteger maxTopicSize,
-                     Optional<Short> replicationFactor,
-                     String name);
+    default void createTopic(Long streamId,
+                             Optional<Long> topicId,
+                             Long partitionsCount,
+                             CompressionAlgorithm compressionAlgorithm,
+                             BigInteger messageExpiry,
+                             BigInteger maxTopicSize,
+                             Optional<Short> replicationFactor,
+                             String name) {
+        createTopic(StreamId.of(streamId),
+                topicId,
+                partitionsCount,
+                compressionAlgorithm,
+                messageExpiry,
+                maxTopicSize,
+                replicationFactor,
+                name);
+    }
 
     void createTopic(StreamId streamId,
                      Optional<Long> topicId,
@@ -37,11 +50,15 @@ public interface TopicsClient {
                      Optional<Short> replicationFactor,
                      String name);
 
-    void updateTopic(Long streamId, Long topicId, Optional<Long> messageExpiry, String name);
+    default void updateTopic(Long streamId, Long topicId, Optional<Long> messageExpiry, String name) {
+        updateTopic(StreamId.of(streamId), TopicId.of(topicId), messageExpiry, name);
+    }
 
     void updateTopic(StreamId streamId, TopicId topicId, Optional<Long> messageExpiry, String name);
 
-    void deleteTopic(Long streamId, Long topicId);
+    default void deleteTopic(Long streamId, Long topicId) {
+        deleteTopic(StreamId.of(streamId), TopicId.of(topicId));
+    }
 
     void deleteTopic(StreamId streamId, TopicId topicId);
 
