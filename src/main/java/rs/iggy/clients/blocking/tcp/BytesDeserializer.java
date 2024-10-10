@@ -8,6 +8,7 @@ import rs.iggy.consumergroup.ConsumerGroup;
 import rs.iggy.consumergroup.ConsumerGroupDetails;
 import rs.iggy.consumergroup.ConsumerGroupMember;
 import rs.iggy.consumeroffset.ConsumerOffsetInfo;
+import rs.iggy.message.*;
 import rs.iggy.partition.Partition;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
@@ -16,9 +17,7 @@ import rs.iggy.topic.Topic;
 import rs.iggy.topic.TopicDetails;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 final class BytesDeserializer {
 
@@ -119,4 +118,50 @@ final class BytesDeserializer {
         return new BigInteger(bytesArray);
     }
 
+    private static BigInteger readU128AsBigInteger(ByteBuf buffer) {
+        var bytesArray = new byte[17];
+        buffer.readBytes(bytesArray, 0, 16);
+        ArrayUtils.reverse(bytesArray);
+        return new BigInteger(bytesArray);
+    }
+
+    public static PolledMessages readPolledMessages(ByteBuf response) {
+        var partitionId = response.readUnsignedIntLE();
+        var currentOffset = readU64AsBigInteger(response);
+        var messagesCount = response.readUnsignedIntLE();
+        var messages = new ArrayList<Message>();
+        while (response.isReadable()) {
+            messages.add(readMessage(response));
+        }
+        return new PolledMessages(partitionId, currentOffset, messages);
+    }
+
+    private static Message readMessage(ByteBuf response) {
+        var offset = readU64AsBigInteger(response);
+        var stateCode = response.readByte();
+        var state = MessageState.fromCode(stateCode);
+        var timestamp = readU64AsBigInteger(response);
+        var id = readU128AsBigInteger(response);
+        var checksum = response.readUnsignedIntLE();
+        var headersLength = response.readUnsignedIntLE();
+        var headers = Optional.<Map<String, HeaderValue>>empty();
+        if (headersLength > 0) {
+            var headersMap = new HashMap<String, HeaderValue>();
+            ByteBuf headersBytes = response.readBytes(Long.valueOf(headersLength).intValue());
+            while (headersBytes.isReadable()) {
+                var keyLength = headersBytes.readUnsignedIntLE();
+                var key = headersBytes.readCharSequence(Long.valueOf(keyLength).intValue(), StandardCharsets.UTF_8).toString();
+                var kindCode = headersBytes.readByte();
+                var kind = HeaderKind.fromCode(kindCode);
+                var valueLength = headersBytes.readUnsignedIntLE();
+                var value = headersBytes.readCharSequence(Long.valueOf(valueLength).intValue(), StandardCharsets.UTF_8);
+                headersMap.put(key, new HeaderValue(kind, String.valueOf(value)));
+            }
+            headers = Optional.of(headersMap);
+        }
+        var payloadLength = response.readUnsignedIntLE();
+        var payload = new byte[Long.valueOf(payloadLength).intValue()];
+        response.readBytes(payload);
+        return new Message(offset, state, timestamp, id, checksum, headers, new String(payload));
+    }
 }

@@ -11,7 +11,7 @@ public record Message(
         BigInteger timestamp,
         BigInteger id,
         Long checksum,
-        Optional<Map<String, Map>> headers,
+        Optional<Map<String, HeaderValue>> headers,
         String payload
 ) {
 
