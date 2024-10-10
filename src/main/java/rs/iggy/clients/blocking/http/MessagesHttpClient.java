@@ -3,7 +3,6 @@ package rs.iggy.clients.blocking.http;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import rs.iggy.clients.blocking.MessagesClient;
 import rs.iggy.identifier.ConsumerId;
-import rs.iggy.identifier.SingleConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import rs.iggy.message.MessageToSend;
@@ -23,7 +22,7 @@ class MessagesHttpClient implements MessagesClient {
 
     @Override
     public PolledMessages pollMessages(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId, PollingStrategy strategy, Long count, boolean autoCommit) {
-        return pollMessages(StreamId.of(streamId), TopicId.of(topicId), partitionId, SingleConsumerId.of(consumerId),
+        return pollMessages(StreamId.of(streamId), TopicId.of(topicId), partitionId, ConsumerId.of(consumerId),
                 strategy, count, autoCommit);
     }
 

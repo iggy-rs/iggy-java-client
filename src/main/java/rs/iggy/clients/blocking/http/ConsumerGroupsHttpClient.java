@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import rs.iggy.clients.blocking.ConsumerGroupsClient;
 import rs.iggy.consumergroup.ConsumerGroup;
 import rs.iggy.consumergroup.ConsumerGroupDetails;
-import rs.iggy.identifier.ConsumerGroupId;
+import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.util.List;
@@ -19,7 +19,7 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var request = httpClient.prepareGetRequest(path(streamId, topicId) + "/" + groupId);
         return httpClient.execute(request, ConsumerGroupDetails.class);
     }
@@ -40,18 +40,18 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var request = httpClient.prepareDeleteRequest(path(streamId, topicId) + "/" + groupId);
         httpClient.execute(request);
     }
 
     @Override
-    public void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         throw new UnsupportedOperationException("Method not available in HTTP client");
     }
 
     @Override
-    public void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         throw new UnsupportedOperationException("Method not available in HTTP client");
     }
 

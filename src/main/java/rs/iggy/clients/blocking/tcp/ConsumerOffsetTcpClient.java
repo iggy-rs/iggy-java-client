@@ -1,8 +1,8 @@
 package rs.iggy.clients.blocking.tcp;
 
 import rs.iggy.clients.blocking.ConsumerOffsetsClient;
+import rs.iggy.consumergroup.Consumer;
 import rs.iggy.consumeroffset.ConsumerOffsetInfo;
-import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.math.BigInteger;
@@ -23,8 +23,8 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
     }
 
     @Override
-    public void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, ConsumerId consumerId, BigInteger offset) {
-        var payload = toBytes(consumerId);
+    public void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer, BigInteger offset) {
+        var payload = toBytes(consumer);
         payload.writeBytes(toBytes(streamId));
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionId.orElse(0L).intValue());
@@ -34,8 +34,8 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
     }
 
     @Override
-    public ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, ConsumerId consumerId) {
-        var payload = toBytes(consumerId);
+    public ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer) {
+        var payload = toBytes(consumer);
         payload.writeBytes(toBytes(streamId));
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionId.orElse(0L).intValue());

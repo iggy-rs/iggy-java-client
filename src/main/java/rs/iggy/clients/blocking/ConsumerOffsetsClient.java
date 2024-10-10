@@ -1,8 +1,7 @@
 package rs.iggy.clients.blocking;
 
+import rs.iggy.consumergroup.Consumer;
 import rs.iggy.consumeroffset.ConsumerOffsetInfo;
-import rs.iggy.identifier.ConsumerId;
-import rs.iggy.identifier.SingleConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.math.BigInteger;
@@ -11,15 +10,15 @@ import java.util.Optional;
 public interface ConsumerOffsetsClient {
 
     default void storeConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId, BigInteger offset) {
-        storeConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, SingleConsumerId.of(consumerId), offset);
+        storeConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, Consumer.of(consumerId), offset);
     }
 
-    void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, ConsumerId consumerId, BigInteger offset);
+    void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer, BigInteger offset);
 
     default ConsumerOffsetInfo getConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId) {
-        return getConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, SingleConsumerId.of(consumerId));
+        return getConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, Consumer.of(consumerId));
     }
 
-    ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, ConsumerId consumerId);
+    ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer);
 
 }

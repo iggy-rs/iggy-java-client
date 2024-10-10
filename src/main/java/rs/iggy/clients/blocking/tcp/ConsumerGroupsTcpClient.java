@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import rs.iggy.clients.blocking.ConsumerGroupsClient;
 import rs.iggy.consumergroup.ConsumerGroup;
 import rs.iggy.consumergroup.ConsumerGroupDetails;
-import rs.iggy.identifier.ConsumerGroupId;
+import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
@@ -68,7 +68,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void deleteConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
@@ -76,12 +76,12 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerGroupId groupId) {
+    public void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         throw new UnsupportedOperationException();
     }
 

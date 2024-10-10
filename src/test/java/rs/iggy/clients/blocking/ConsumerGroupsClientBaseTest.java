@@ -3,7 +3,7 @@ package rs.iggy.clients.blocking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.iggy.consumergroup.ConsumerGroup;
-import rs.iggy.identifier.ConsumerGroupId;
+import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.util.Optional;
@@ -33,10 +33,10 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
 
         var consumerGroupById = consumerGroupsClient.getConsumerGroup(StreamId.of(42L),
                 TopicId.of(42L),
-                ConsumerGroupId.of(42L));
+                ConsumerId.of(42L));
         var consumerGroupByName = consumerGroupsClient.getConsumerGroup(StreamId.of(42L),
                 TopicId.of(42L),
-                ConsumerGroupId.of("consumer-group-42"));
+                ConsumerId.of("consumer-group-42"));
 
         // then
         assertThat(consumerGroupById).isNotNull();
@@ -61,7 +61,7 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
 
         // when
         consumerGroupsClient.deleteConsumerGroup(StreamId.of(42L), TopicId.of(42L),
-                ConsumerGroupId.of("consumer-group-42"));
+                ConsumerId.of("consumer-group-42"));
 
         // then
         assertThat(consumerGroupsClient.getConsumerGroups(42L, 42L)).isEmpty();
