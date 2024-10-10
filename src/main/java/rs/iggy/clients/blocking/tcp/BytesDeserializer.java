@@ -98,11 +98,21 @@ final class BytesDeserializer {
         var consumerGroup = readConsumerGroup(response);
 
         List<ConsumerGroupMember> members = new ArrayList<>();
-        if (response.isReadable()) {
-            log.debug("has more data"); //TODO(mm): 9.10.2024 add consumer group members
+        while (response.isReadable()) {
+            members.add(readConsumerGroupMember(response));
         }
 
         return new ConsumerGroupDetails(consumerGroup, members);
+    }
+
+    private static ConsumerGroupMember readConsumerGroupMember(ByteBuf response) {
+        var memberId = response.readUnsignedIntLE();
+        var partitionsCount = response.readUnsignedIntLE();
+        List<Long> partitionIds = new ArrayList<>();
+        for (int i = 0; i < partitionsCount; i++) {
+            partitionIds.add(response.readUnsignedIntLE());
+        }
+        return new ConsumerGroupMember(memberId, partitionsCount, partitionIds);
     }
 
     public static ConsumerGroup readConsumerGroup(ByteBuf response) {
