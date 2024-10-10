@@ -3,12 +3,27 @@ package rs.iggy.clients.blocking.tcp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
+import rs.iggy.identifier.ConsumerGroupId;
+import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.Identifier;
 import java.math.BigInteger;
 
 final class BytesSerializer {
 
     private BytesSerializer() {
+    }
+
+    static ByteBuf toBytes(ConsumerId consumerId) {
+        var idBytes = toBytes((Identifier) consumerId);
+        var buffer = Unpooled.buffer(1 + idBytes.readableBytes());
+
+        var consumerKind = 1;
+        if (consumerId instanceof ConsumerGroupId) {
+            consumerKind = 2;
+        }
+        buffer.writeByte(consumerKind);
+        buffer.writeBytes(idBytes);
+        return buffer;
     }
 
     static ByteBuf toBytes(Identifier identifier) {

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import rs.iggy.consumergroup.ConsumerGroup;
 import rs.iggy.consumergroup.ConsumerGroupDetails;
 import rs.iggy.consumergroup.ConsumerGroupMember;
+import rs.iggy.consumeroffset.ConsumerOffsetInfo;
 import rs.iggy.partition.Partition;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
@@ -102,6 +103,13 @@ final class BytesDeserializer {
         var nameLength = response.readByte();
         var name = response.readCharSequence(nameLength, StandardCharsets.UTF_8).toString();
         return new ConsumerGroup(groupId, name, partitionsCount, membersCount);
+    }
+
+    public static ConsumerOffsetInfo readConsumerOffsetInfo(ByteBuf response) {
+        var partitionId = response.readUnsignedIntLE();
+        var currentOffset = readU64AsBigInteger(response);
+        var storedOffset = readU64AsBigInteger(response);
+        return new ConsumerOffsetInfo(partitionId, currentOffset, storedOffset);
     }
 
     private static BigInteger readU64AsBigInteger(ByteBuf buffer) {

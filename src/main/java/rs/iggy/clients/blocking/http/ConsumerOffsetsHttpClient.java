@@ -4,7 +4,6 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 import rs.iggy.clients.blocking.ConsumerOffsetsClient;
 import rs.iggy.consumeroffset.ConsumerOffsetInfo;
 import rs.iggy.identifier.ConsumerId;
-import rs.iggy.identifier.SingleConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import java.math.BigInteger;
@@ -20,22 +19,10 @@ class ConsumerOffsetsHttpClient implements ConsumerOffsetsClient {
     }
 
     @Override
-    public void storeConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId, BigInteger offset) {
-        storeConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, SingleConsumerId.of(consumerId),
-                offset);
-    }
-
-    @Override
     public void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, ConsumerId consumerId, BigInteger offset) {
         var request = httpClient.preparePutRequest(path(streamId, topicId),
                 new StoreConsumerOffset(consumerId.toString(), partitionId, offset));
         httpClient.execute(request);
-    }
-
-    @Override
-    public ConsumerOffsetInfo getConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId) {
-        return getConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId,
-                SingleConsumerId.of(consumerId));
     }
 
     @Override
