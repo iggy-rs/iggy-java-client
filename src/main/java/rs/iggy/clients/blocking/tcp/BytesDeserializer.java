@@ -52,12 +52,22 @@ final class BytesDeserializer {
     public static TopicDetails readTopicDetails(ByteBuf response) {
         var topic = readTopic(response);
 
-        List<Partition> partitions = Collections.emptyList();
-        if (response.isReadable()) {
-            log.debug("has more data"); //TODO(mm): 8.10.2024 Add partitions
+        List<Partition> partitions = new ArrayList<>();
+        while (response.isReadable()) {
+            partitions.add(readPartition(response));
         }
 
         return new TopicDetails(topic, partitions);
+    }
+
+    private static Partition readPartition(ByteBuf response) {
+        var partitionId = response.readUnsignedIntLE();
+        var createdAt = readU64AsBigInteger(response);
+        var segmentsCount = response.readUnsignedIntLE();
+        var currentOffset = readU64AsBigInteger(response);
+        var size = readU64AsBigInteger(response);
+        var messagesCount = readU64AsBigInteger(response);
+        return new Partition(partitionId, createdAt, segmentsCount, currentOffset, size.toString(), messagesCount);
     }
 
     public static Topic readTopic(ByteBuf response) {
