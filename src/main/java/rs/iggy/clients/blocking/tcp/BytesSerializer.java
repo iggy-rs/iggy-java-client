@@ -49,21 +49,6 @@ final class BytesSerializer {
         return buffer;
     }
 
-    static ByteBuf toBytesAsU64(BigInteger value) {
-        //TODO(mm): 10.10.2024 fix for bigger values
-        ByteBuf buffer = Unpooled.buffer(8, 8);
-        byte[] valueAsBytes = value.toByteArray();
-        if (valueAsBytes.length > 8) {
-            throw new IllegalArgumentException();
-        }
-        ArrayUtils.reverse(valueAsBytes);
-        buffer.writeBytes(valueAsBytes);
-        if (valueAsBytes.length < 8) {
-            buffer.writeZero(8 - valueAsBytes.length);
-        }
-        return buffer;
-    }
-
     static ByteBuf toBytes(Partitioning partitioning) {
         ByteBuf buffer = Unpooled.buffer(2 + partitioning.value().length);
         buffer.writeByte(partitioning.kind().asCode());
@@ -85,7 +70,14 @@ final class BytesSerializer {
         return buffer;
     }
 
-    private static ByteBuf toBytes(Map<String, HeaderValue> headers) {
+    static ByteBuf toBytes(PollingStrategy strategy) {
+        var buffer = Unpooled.buffer(9);
+        buffer.writeByte(strategy.kind().asCode());
+        buffer.writeBytes(toBytesAsU64(strategy.value()));
+        return buffer;
+    }
+
+    static ByteBuf toBytes(Map<String, HeaderValue> headers) {
         if (headers.isEmpty()) {
             return Unpooled.EMPTY_BUFFER;
         }
@@ -103,25 +95,38 @@ final class BytesSerializer {
         return buffer;
     }
 
-    private static ByteBuf toBytesAsU128(BigInteger value) {
-        //TODO(mm): 10.10.2024 fix for bigger values
+    static ByteBuf toBytesAsU64(BigInteger value) {
+        if (value.signum() == -1) {
+            throw new IllegalArgumentException("Negative value cannot be serialized to unsigned 64: " + value);
+        }
+        ByteBuf buffer = Unpooled.buffer(8, 8);
+        byte[] valueAsBytes = value.toByteArray();
+        if (valueAsBytes.length > 9) {
+            throw new IllegalArgumentException();
+        }
+        ArrayUtils.reverse(valueAsBytes);
+        buffer.writeBytes(valueAsBytes, 0, Math.min(8, valueAsBytes.length));
+        if (valueAsBytes.length < 8) {
+            buffer.writeZero(8 - valueAsBytes.length);
+        }
+        return buffer;
+    }
+
+    static ByteBuf toBytesAsU128(BigInteger value) {
+        if (value.signum() == -1) {
+            throw new IllegalArgumentException("Negative value cannot be serialized to unsigned 128: " + value);
+        }
         ByteBuf buffer = Unpooled.buffer(16, 16);
         byte[] valueAsBytes = value.toByteArray();
         if (valueAsBytes.length > 17) {
             throw new IllegalArgumentException();
         }
         ArrayUtils.reverse(valueAsBytes);
-        buffer.writeBytes(valueAsBytes, 0, Math.min(valueAsBytes.length, 16));
+        buffer.writeBytes(valueAsBytes, 0, Math.min(16, valueAsBytes.length));
         if (valueAsBytes.length < 16) {
             buffer.writeZero(16 - valueAsBytes.length);
         }
         return buffer;
     }
 
-    public static ByteBuf toBytes(PollingStrategy strategy) {
-        var buffer = Unpooled.buffer(9);
-        buffer.writeByte(strategy.kind().asCode());
-        buffer.writeBytes(toBytesAsU64(strategy.value()));
-        return buffer;
-    }
 }
