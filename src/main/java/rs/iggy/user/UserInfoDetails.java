@@ -10,4 +10,7 @@ public record UserInfoDetails(
         String username,
         Optional<Permissions> permissions
 ) {
+    public UserInfoDetails(UserInfo userInfo, Optional<Permissions> permissions) {
+        this(userInfo.id(), userInfo.createdAt(), userInfo.status(), userInfo.username(), permissions);
+    }
 }

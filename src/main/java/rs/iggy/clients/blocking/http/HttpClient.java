@@ -18,7 +18,7 @@ import java.util.Optional;
 
 class HttpClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
 
     private static final String AUTHORIZATION = "Authorization";
     private final String url;
@@ -103,7 +103,7 @@ class HttpClient {
     private ClassicHttpRequest addRequestBody(ClassicRequestBuilder requestBuilder, Object body) {
         try {
             var encodedBody = objectMapper.writeValueAsString(body);
-            LOG.debug("Request body: {}", encodedBody);
+            log.debug("Request body: {}", encodedBody);
             return requestBuilder
                     .setHeader("Content-Type", "application/json")
                     .setEntity(encodedBody)

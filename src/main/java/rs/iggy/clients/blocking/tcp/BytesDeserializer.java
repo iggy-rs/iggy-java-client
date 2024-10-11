@@ -17,6 +17,7 @@ import rs.iggy.system.Stats;
 import rs.iggy.topic.CompressionAlgorithm;
 import rs.iggy.topic.Topic;
 import rs.iggy.topic.TopicDetails;
+import rs.iggy.user.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -257,6 +258,87 @@ final class BytesDeserializer {
         var groupId = response.readUnsignedIntLE();
 
         return new ConsumerGroupInfo(streamId, topicId, groupId);
+    }
+
+    static UserInfoDetails readUserInfoDetails(ByteBuf response) {
+        var userInfo = readUserInfo(response);
+
+        Optional<Permissions> permissionsOptional = Optional.empty();
+        if (response.readBoolean()) {
+            var permissions = readPermissions(response);
+            permissionsOptional = Optional.of(permissions);
+        }
+
+        return new UserInfoDetails(userInfo, permissionsOptional);
+    }
+
+    static Permissions readPermissions(ByteBuf response) {
+        var _permissionsLength = response.readUnsignedIntLE();
+        var globalPermissions = readGlobalPermissions(response);
+        Map<Long, StreamPermissions> streamPermissionsMap = new HashMap<>();
+        while (response.readBoolean()) {
+            var streamId = response.readUnsignedIntLE();
+            var streamPermissions = readStreamPermissions(response);
+            streamPermissionsMap.put(streamId, streamPermissions);
+        }
+        return new Permissions(globalPermissions, streamPermissionsMap);
+    }
+
+    static StreamPermissions readStreamPermissions(ByteBuf response) {
+        var manageStream = response.readBoolean();
+        var readStream = response.readBoolean();
+        var manageTopics = response.readBoolean();
+        var readTopics = response.readBoolean();
+        var pollMessages = response.readBoolean();
+        var sendMessages = response.readBoolean();
+        Map<Long, TopicPermissions> topicPermissionsMap = new HashMap<>();
+        while (response.readBoolean()) {
+            var topicId = response.readUnsignedIntLE();
+            var topicPermissions = readTopicPermissions(response);
+            topicPermissionsMap.put(topicId, topicPermissions);
+        }
+        return new StreamPermissions(manageStream, readStream, manageTopics, readTopics, pollMessages, sendMessages, topicPermissionsMap);
+    }
+
+    static TopicPermissions readTopicPermissions(ByteBuf response) {
+        var manageTopic = response.readBoolean();
+        var readTopic = response.readBoolean();
+        var pollMessages = response.readBoolean();
+        var sendMessages = response.readBoolean();
+        return new TopicPermissions(manageTopic, readTopic, pollMessages, sendMessages);
+    }
+
+    static GlobalPermissions readGlobalPermissions(ByteBuf response) {
+        var manageServers = response.readBoolean();
+        var readServers = response.readBoolean();
+        var manageUsers = response.readBoolean();
+        var readUsers = response.readBoolean();
+        var manageStreams = response.readBoolean();
+        var readStreams = response.readBoolean();
+        var manageTopics = response.readBoolean();
+        var readTopics = response.readBoolean();
+        var pollMessages = response.readBoolean();
+        var sendMessages = response.readBoolean();
+        return new GlobalPermissions(manageServers,
+                readServers,
+                manageUsers,
+                readUsers,
+                manageStreams,
+                readStreams,
+                manageTopics,
+                readTopics,
+                pollMessages,
+                sendMessages);
+    }
+
+    static UserInfo readUserInfo(ByteBuf response) {
+        var userId = response.readUnsignedIntLE();
+        var createdAt = readU64AsBigInteger(response);
+        var statusCode = response.readByte();
+        var status = UserStatus.fromCode(statusCode);
+        var usernameLength = response.readByte();
+        var username = response.readCharSequence(usernameLength, StandardCharsets.UTF_8).toString();
+        return new UserInfo(userId, createdAt, status, username);
     }
 
     private static BigInteger readU64AsBigInteger(ByteBuf buffer) {

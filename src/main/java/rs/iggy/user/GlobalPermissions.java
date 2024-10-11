@@ -1,6 +1,6 @@
 package rs.iggy.user;
 
-record GlobalPermissions(
+public record GlobalPermissions(
         boolean manageServers,
         boolean readServers,
         boolean manageUsers,

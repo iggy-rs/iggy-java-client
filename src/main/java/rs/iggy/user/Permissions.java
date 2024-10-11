@@ -1,10 +1,12 @@
 package rs.iggy.user;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import java.util.Map;
-import java.util.Optional;
 
 public record Permissions(
         GlobalPermissions global,
-        Optional<Map<Long, StreamPermissions>> streams
+        @JsonSetter(nulls = Nulls.AS_EMPTY)
+        Map<Long, StreamPermissions> streams
 ) {
 }

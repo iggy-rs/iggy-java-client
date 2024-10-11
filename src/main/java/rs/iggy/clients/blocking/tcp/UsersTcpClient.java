@@ -4,9 +4,12 @@ import io.netty.buffer.Unpooled;
 import rs.iggy.clients.blocking.UsersClient;
 import rs.iggy.identifier.UserId;
 import rs.iggy.user.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import static rs.iggy.clients.blocking.tcp.BytesDeserializer.readUserInfoDetails;
 import static rs.iggy.clients.blocking.tcp.BytesSerializer.nameToBytes;
+import static rs.iggy.clients.blocking.tcp.BytesSerializer.toBytes;
 
 class UsersTcpClient implements UsersClient {
 
@@ -28,12 +31,19 @@ class UsersTcpClient implements UsersClient {
 
     @Override
     public UserInfoDetails getUser(UserId userId) {
-        throw new UnsupportedOperationException();
+        var payload = toBytes(userId);
+        var response = connection.send(GET_USER_CODE, payload);
+        return readUserInfoDetails(response);
     }
 
     @Override
     public List<UserInfo> getUsers() {
-        throw new UnsupportedOperationException();
+        var response = connection.send(GET_USERS_CODE);
+        List<UserInfo> users = new ArrayList<>();
+        while (response.isReadable()) {
+            users.add(BytesDeserializer.readUserInfo(response));
+        }
+        return users;
     }
 
     @Override
