@@ -1,8 +1,8 @@
 package rs.iggy.user;
 
 public enum UserStatus {
-    Active(1),
-    Inactive(2);
+    active(1),
+    inactive(2);
 
     private final int code;
 
@@ -17,5 +17,9 @@ public enum UserStatus {
             }
         }
         throw new IllegalArgumentException("Invalid user status: " + code);
+    }
+
+    public int asCode() {
+        return code;
     }
 }

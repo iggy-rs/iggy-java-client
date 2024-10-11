@@ -9,6 +9,10 @@ import rs.iggy.message.HeaderValue;
 import rs.iggy.message.MessageToSend;
 import rs.iggy.message.Partitioning;
 import rs.iggy.message.PollingStrategy;
+import rs.iggy.user.GlobalPermissions;
+import rs.iggy.user.Permissions;
+import rs.iggy.user.StreamPermissions;
+import rs.iggy.user.TopicPermissions;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -92,6 +96,70 @@ final class BytesSerializer {
             buffer.writeIntLE(value.value().length());
             buffer.writeBytes(value.value().getBytes());
         }
+        return buffer;
+    }
+
+    static ByteBuf toBytes(Permissions permissions) {
+        var buffer = Unpooled.buffer();
+        buffer.writeBytes(toBytes(permissions.global()));
+        if (permissions.streams().isEmpty()) {
+            buffer.writeByte(0);
+        } else {
+            for (Map.Entry<Long, StreamPermissions> entry : permissions.streams().entrySet()) {
+                buffer.writeByte(1);
+                buffer.writeIntLE(entry.getKey().intValue());
+                buffer.writeBytes(toBytes(entry.getValue()));
+            }
+            buffer.writeByte(0);
+        }
+
+        return buffer;
+    }
+
+    static ByteBuf toBytes(GlobalPermissions permissions) {
+        var buffer = Unpooled.buffer();
+        buffer.writeBoolean(permissions.manageServers());
+        buffer.writeBoolean(permissions.readServers());
+        buffer.writeBoolean(permissions.manageUsers());
+        buffer.writeBoolean(permissions.readUsers());
+        buffer.writeBoolean(permissions.manageStreams());
+        buffer.writeBoolean(permissions.readStreams());
+        buffer.writeBoolean(permissions.manageTopics());
+        buffer.writeBoolean(permissions.readTopics());
+        buffer.writeBoolean(permissions.pollMessages());
+        buffer.writeBoolean(permissions.sendMessages());
+        return buffer;
+    }
+
+    static ByteBuf toBytes(StreamPermissions permissions) {
+        var buffer = Unpooled.buffer();
+        buffer.writeBoolean(permissions.manageStream());
+        buffer.writeBoolean(permissions.readStream());
+        buffer.writeBoolean(permissions.manageTopics());
+        buffer.writeBoolean(permissions.readTopics());
+        buffer.writeBoolean(permissions.pollMessages());
+        buffer.writeBoolean(permissions.sendMessages());
+
+        if (permissions.topics().isEmpty()) {
+            buffer.writeByte(0);
+        } else {
+            for (Map.Entry<Long, TopicPermissions> entry : permissions.topics().entrySet()) {
+                buffer.writeByte(1);
+                buffer.writeIntLE(entry.getKey().intValue());
+                buffer.writeBytes(toBytes(entry.getValue()));
+            }
+            buffer.writeByte(0);
+        }
+
+        return buffer;
+    }
+
+    static ByteBuf toBytes(TopicPermissions permissions) {
+        var buffer = Unpooled.buffer();
+        buffer.writeBoolean(permissions.manageTopic());
+        buffer.writeBoolean(permissions.readTopic());
+        buffer.writeBoolean(permissions.pollMessages());
+        buffer.writeBoolean(permissions.sendMessages());
         return buffer;
     }
 

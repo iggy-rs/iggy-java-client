@@ -15,7 +15,7 @@ public interface UsersClient {
 
     List<UserInfo> getUsers();
 
-    void createUser(String username, String password, UserStatus status, Optional<Permissions> permissions);
+    UserInfoDetails createUser(String username, String password, UserStatus status, Optional<Permissions> permissions);
 
     default void deleteUser(Long userId) {
         deleteUser(UserId.of(userId));

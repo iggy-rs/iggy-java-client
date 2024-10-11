@@ -47,28 +47,64 @@ class UsersTcpClient implements UsersClient {
     }
 
     @Override
-    public void createUser(String username, String password, UserStatus status, Optional<Permissions> permissions) {
-        throw new UnsupportedOperationException();
+    public UserInfoDetails createUser(String username, String password, UserStatus status, Optional<Permissions> permissions) {
+        var payload = Unpooled.buffer();
+        payload.writeBytes(nameToBytes(username));
+        payload.writeBytes(nameToBytes(password));
+        payload.writeByte(status.asCode());
+        permissions.ifPresentOrElse(perms -> {
+            payload.writeByte(1);
+            var permissionBytes = toBytes(perms);
+            payload.writeIntLE(permissionBytes.readableBytes());
+            payload.writeBytes(permissionBytes);
+        }, () -> payload.writeByte(0));
+
+        var response = connection.send(CREATE_USER_CODE, payload);
+        return readUserInfoDetails(response);
     }
 
     @Override
     public void deleteUser(UserId userId) {
-        throw new UnsupportedOperationException();
+        var payload = toBytes(userId);
+        connection.send(DELETE_USER_CODE, payload);
     }
 
     @Override
-    public void updateUser(UserId userId, Optional<String> username, Optional<UserStatus> status) {
-        throw new UnsupportedOperationException();
+    public void updateUser(UserId userId, Optional<String> usernameOptional, Optional<UserStatus> statusOptional) {
+        var payload = toBytes(userId);
+        usernameOptional.ifPresentOrElse((username) -> {
+            payload.writeByte(1);
+            payload.writeBytes(nameToBytes(username));
+        }, () -> payload.writeByte(0));
+        statusOptional.ifPresentOrElse((status) -> {
+            payload.writeByte(1);
+            payload.writeByte(status.asCode());
+        }, () -> payload.writeByte(0));
+
+        connection.send(UPDATE_USER_CODE, payload);
     }
 
     @Override
-    public void updatePermissions(UserId userId, Optional<Permissions> permissions) {
-        throw new UnsupportedOperationException();
+    public void updatePermissions(UserId userId, Optional<Permissions> permissionsOptional) {
+        var payload = toBytes(userId);
+
+        permissionsOptional.ifPresentOrElse(permissions -> {
+            payload.writeByte(1);
+            var permissionBytes = toBytes(permissions);
+            payload.writeIntLE(permissionBytes.readableBytes());
+            payload.writeBytes(permissionBytes);
+        }, () -> payload.writeByte(0));
+
+        connection.send(UPDATE_PERMISSIONS_CODE, payload);
     }
 
     @Override
     public void changePassword(UserId userId, String currentPassword, String newPassword) {
-        throw new UnsupportedOperationException();
+        var payload = toBytes(userId);
+        payload.writeBytes(nameToBytes(currentPassword));
+        payload.writeBytes(nameToBytes(newPassword));
+
+        connection.send(CHANGE_PASSWORD_CODE, payload);
     }
 
     @Override
@@ -93,6 +129,6 @@ class UsersTcpClient implements UsersClient {
 
     @Override
     public void logout() {
-        throw new UnsupportedOperationException();
+        connection.send(LOGOUT_USER_CODE);
     }
 }

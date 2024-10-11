@@ -30,9 +30,10 @@ class UsersHttpClient implements UsersClient {
     }
 
     @Override
-    public void createUser(String username, String password, UserStatus status, Optional<Permissions> permissions) {
+    public UserInfoDetails createUser(String username, String password, UserStatus status, Optional<Permissions> permissions) {
         var request = httpClient.preparePostRequest(USERS, new CreateUser(username, password, status, permissions));
-        httpClient.execute(request);
+        return httpClient.execute(request, new TypeReference<>() {
+        });
     }
 
     @Override
@@ -71,7 +72,7 @@ class UsersHttpClient implements UsersClient {
 
     @Override
     public void logout() {
-        var request = httpClient.preparePostRequest(USERS + "/logout", Optional.empty());
+        var request = httpClient.prepareDeleteRequest(USERS + "/logout");
         httpClient.execute(request);
         httpClient.setToken(Optional.empty());
     }
