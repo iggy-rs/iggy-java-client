@@ -56,9 +56,15 @@ class TopicsHttpClient implements TopicsClient {
     }
 
     @Override
-    public void updateTopic(StreamId streamId, TopicId topicId, Optional<Long> messageExpiry, String name) {
+    public void updateTopic(StreamId streamId,
+                            TopicId topicId,
+                            CompressionAlgorithm compressionAlgorithm,
+                            BigInteger messageExpiry,
+                            BigInteger maxTopicSize,
+                            Optional<Short> replicationFactor,
+                            String name) {
         var request = httpClient.preparePutRequest(STREAMS + "/" + streamId + TOPICS + "/" + topicId,
-                new UpdateTopic(messageExpiry, name));
+                new UpdateTopic(compressionAlgorithm, messageExpiry, maxTopicSize, replicationFactor, name));
         httpClient.execute(request);
     }
 
@@ -79,6 +85,12 @@ class TopicsHttpClient implements TopicsClient {
     ) {
     }
 
-    record UpdateTopic(Optional<Long> messageExpiry, String name) {
+    record UpdateTopic(
+            CompressionAlgorithm compressionAlgorithm,
+            BigInteger messageExpiry,
+            BigInteger maxTopicSize,
+            Optional<Short> replicationFactor,
+            String name
+    ) {
     }
 }

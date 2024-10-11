@@ -23,15 +23,15 @@ public interface TopicsClient {
 
     List<Topic> getTopics(StreamId streamId);
 
-    default void createTopic(Long streamId,
-                             Optional<Long> topicId,
-                             Long partitionsCount,
-                             CompressionAlgorithm compressionAlgorithm,
-                             BigInteger messageExpiry,
-                             BigInteger maxTopicSize,
-                             Optional<Short> replicationFactor,
-                             String name) {
-        createTopic(StreamId.of(streamId),
+    default TopicDetails createTopic(Long streamId,
+                                     Optional<Long> topicId,
+                                     Long partitionsCount,
+                                     CompressionAlgorithm compressionAlgorithm,
+                                     BigInteger messageExpiry,
+                                     BigInteger maxTopicSize,
+                                     Optional<Short> replicationFactor,
+                                     String name) {
+        return createTopic(StreamId.of(streamId),
                 topicId,
                 partitionsCount,
                 compressionAlgorithm,
@@ -42,19 +42,37 @@ public interface TopicsClient {
     }
 
     TopicDetails createTopic(StreamId streamId,
-                     Optional<Long> topicId,
-                     Long partitionsCount,
+                             Optional<Long> topicId,
+                             Long partitionsCount,
+                             CompressionAlgorithm compressionAlgorithm,
+                             BigInteger messageExpiry,
+                             BigInteger maxTopicSize,
+                             Optional<Short> replicationFactor,
+                             String name);
+
+    default void updateTopic(Long streamId,
+                             Long topicId,
+                             CompressionAlgorithm compressionAlgorithm,
+                             BigInteger messageExpiry,
+                             BigInteger maxTopicSize,
+                             Optional<Short> replicationFactor,
+                             String name) {
+        updateTopic(StreamId.of(streamId),
+                TopicId.of(topicId),
+                compressionAlgorithm,
+                messageExpiry,
+                maxTopicSize,
+                replicationFactor,
+                name);
+    }
+
+    void updateTopic(StreamId streamId,
+                     TopicId topicId,
                      CompressionAlgorithm compressionAlgorithm,
                      BigInteger messageExpiry,
                      BigInteger maxTopicSize,
                      Optional<Short> replicationFactor,
                      String name);
-
-    default void updateTopic(Long streamId, Long topicId, Optional<Long> messageExpiry, String name) {
-        updateTopic(StreamId.of(streamId), TopicId.of(topicId), messageExpiry, name);
-    }
-
-    void updateTopic(StreamId streamId, TopicId topicId, Optional<Long> messageExpiry, String name);
 
     default void deleteTopic(Long streamId, Long topicId) {
         deleteTopic(StreamId.of(streamId), TopicId.of(topicId));

@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import static rs.iggy.clients.blocking.tcp.BytesDeserializer.readTopic;
 import static rs.iggy.clients.blocking.tcp.BytesDeserializer.readTopicDetails;
-import static rs.iggy.clients.blocking.tcp.BytesSerializer.nameToBytes;
-import static rs.iggy.clients.blocking.tcp.BytesSerializer.toBytes;
+import static rs.iggy.clients.blocking.tcp.BytesSerializer.*;
 
 class TopicsTcpClient implements TopicsClient {
 
@@ -58,8 +57,8 @@ class TopicsTcpClient implements TopicsClient {
         payload.writeIntLE(topicId.orElse(0L).intValue());
         payload.writeIntLE(partitionsCount.intValue());
         payload.writeByte(compressionAlgorithm.asCode());
-        payload.writeBytes(BytesSerializer.toBytesAsU64(messageExpiry));
-        payload.writeBytes(BytesSerializer.toBytesAsU64(maxTopicSize));
+        payload.writeBytes(toBytesAsU64(messageExpiry));
+        payload.writeBytes(toBytesAsU64(maxTopicSize));
         payload.writeByte(replicationFactor.orElse((short) 0));
         payload.writeBytes(nameToBytes(name));
 
@@ -67,10 +66,24 @@ class TopicsTcpClient implements TopicsClient {
         return readTopicDetails(response);
     }
 
-
     @Override
-    public void updateTopic(StreamId streamId, TopicId topicId, Optional<Long> messageExpiry, String name) {
-        throw new UnsupportedOperationException();
+    public void updateTopic(StreamId streamId,
+                            TopicId topicId,
+                            CompressionAlgorithm compressionAlgorithm,
+                            BigInteger messageExpiry,
+                            BigInteger maxTopicSize,
+                            Optional<Short> replicationFactor,
+                            String name) {
+        var payload = Unpooled.buffer();
+        payload.writeBytes(toBytes(streamId));
+        payload.writeBytes(toBytes(topicId));
+        payload.writeByte(compressionAlgorithm.asCode());
+        payload.writeBytes(toBytesAsU64(messageExpiry));
+        payload.writeBytes(toBytesAsU64(maxTopicSize));
+        payload.writeByte(replicationFactor.orElse((short) 0));
+        payload.writeBytes(nameToBytes(name));
+
+        connection.send(UPDATE_TOPIC_CODE, payload);
     }
 
     @Override
