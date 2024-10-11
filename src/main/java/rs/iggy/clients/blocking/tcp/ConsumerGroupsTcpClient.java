@@ -77,12 +77,20 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
 
     @Override
     public void joinConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
-        throw new UnsupportedOperationException();
+        var payload = toBytes(streamId);
+        payload.writeBytes(toBytes(topicId));
+        payload.writeBytes(toBytes(groupId));
+
+        connection.send(JOIN_CONSUMER_GROUP_CODE, payload);
     }
 
     @Override
     public void leaveConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
-        throw new UnsupportedOperationException();
+        var payload = toBytes(streamId);
+        payload.writeBytes(toBytes(topicId));
+        payload.writeBytes(toBytes(groupId));
+
+        connection.send(LEAVE_CONSUMER_GROUP_CODE, payload);
     }
 
 }

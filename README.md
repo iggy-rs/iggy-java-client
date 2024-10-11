@@ -14,7 +14,6 @@ Official Java client SDK for [Iggy.rs](https://iggy.rs) message streaming.
 ## To do
 
 - Transport protocols
-    - TCP
     - QUIC
 - Publish maven package
 - Add examples
