@@ -10,7 +10,16 @@ import static rs.iggy.clients.blocking.tcp.BytesSerializer.nameToBytes;
 
 class UsersTcpClient implements UsersClient {
 
+    private static final int GET_USER_CODE = 31;
+    private static final int GET_USERS_CODE = 32;
+    private static final int CREATE_USER_CODE = 33;
+    private static final int DELETE_USER_CODE = 34;
+    private static final int UPDATE_USER_CODE = 35;
+    private static final int UPDATE_PERMISSIONS_CODE = 36;
+    private static final int CHANGE_PASSWORD_CODE = 37;
     private static final int LOGIN_USER_CODE = 38;
+    private static final int LOGOUT_USER_CODE = 39;
+
     private final TcpConnectionHandler connection;
 
     UsersTcpClient(TcpConnectionHandler connection) {

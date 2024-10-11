@@ -11,7 +11,7 @@ public interface SystemClient {
 
     ClientInfoDetails getMe();
 
-    ClientInfoDetails getClient(String clientId);
+    ClientInfoDetails getClient(Long clientId);
 
     List<ClientInfo> getClients();
 

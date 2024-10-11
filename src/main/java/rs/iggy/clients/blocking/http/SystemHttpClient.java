@@ -30,7 +30,7 @@ class SystemHttpClient implements SystemClient {
     }
 
     @Override
-    public ClientInfoDetails getClient(String clientId) {
+    public ClientInfoDetails getClient(Long clientId) {
         var request = httpClient.prepareGetRequest(CLIENTS + "/" + clientId);
         return httpClient.execute(request, ClientInfoDetails.class);
     }

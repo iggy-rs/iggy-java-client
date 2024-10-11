@@ -11,6 +11,7 @@ public class IggyTcpClient implements IggyClient {
     private final ConsumerGroupsTcpClient consumerGroupsClient;
     private final ConsumerOffsetTcpClient consumerOffsetsClient;
     private final MessagesTcpClient messagesClient;
+    private final SystemTcpClient systemClient;
 
     public IggyTcpClient(String host, Integer port) {
         TcpConnectionHandler connection = new TcpConnectionHandler(host, port);
@@ -21,11 +22,12 @@ public class IggyTcpClient implements IggyClient {
         consumerGroupsClient = new ConsumerGroupsTcpClient(connection);
         consumerOffsetsClient = new ConsumerOffsetTcpClient(connection);
         messagesClient = new MessagesTcpClient(connection);
+        systemClient = new SystemTcpClient(connection);
     }
 
     @Override
     public SystemClient system() {
-        throw new UnsupportedOperationException();
+        return systemClient;
     }
 
     @Override

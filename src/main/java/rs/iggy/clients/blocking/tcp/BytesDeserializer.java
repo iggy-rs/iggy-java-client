@@ -10,6 +10,10 @@ import rs.iggy.message.*;
 import rs.iggy.partition.Partition;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
+import rs.iggy.system.ClientInfo;
+import rs.iggy.system.ClientInfoDetails;
+import rs.iggy.system.ConsumerGroupInfo;
+import rs.iggy.system.Stats;
 import rs.iggy.topic.CompressionAlgorithm;
 import rs.iggy.topic.Topic;
 import rs.iggy.topic.TopicDetails;
@@ -165,6 +169,94 @@ final class BytesDeserializer {
         var payload = newByteArray(payloadLength);
         response.readBytes(payload);
         return new Message(offset, state, timestamp, id, checksum, headers, payload);
+    }
+
+    static Stats readStats(ByteBuf response) {
+        var processId = response.readUnsignedIntLE();
+        var cpuUsage = response.readFloatLE();
+        var totalCpuUsage = response.readFloatLE();
+        var memoryUsage = readU64AsBigInteger(response);
+        var totalMemory = readU64AsBigInteger(response);
+        var availableMemory = readU64AsBigInteger(response);
+        var runTime = readU64AsBigInteger(response);
+        var startTime = readU64AsBigInteger(response);
+        var readBytes = readU64AsBigInteger(response);
+        var writtenBytes = readU64AsBigInteger(response);
+        var messagesSizeBytes = readU64AsBigInteger(response);
+        var streamsCount = response.readUnsignedIntLE();
+        var topicsCount = response.readUnsignedIntLE();
+        var partitionsCount = response.readUnsignedIntLE();
+        var segmentsCount = response.readUnsignedIntLE();
+        var messagesCount = readU64AsBigInteger(response);
+        var clientsCount = response.readUnsignedIntLE();
+        var consumerGroupsCount = response.readUnsignedIntLE();
+        var hostnameLength = response.readUnsignedIntLE();
+        var hostname = response.readCharSequence(toInt(hostnameLength), StandardCharsets.UTF_8).toString();
+        var osNameLength = response.readUnsignedIntLE();
+        var osName = response.readCharSequence(toInt(osNameLength), StandardCharsets.UTF_8).toString();
+        var osVersionLength = response.readUnsignedIntLE();
+        var osVersion = response.readCharSequence(toInt(osVersionLength), StandardCharsets.UTF_8).toString();
+        var kernelVersionLength = response.readUnsignedIntLE();
+        var kernelVersion = response.readCharSequence(toInt(kernelVersionLength), StandardCharsets.UTF_8).toString();
+
+        return new Stats(processId,
+                cpuUsage,
+                totalCpuUsage,
+                memoryUsage.toString(),
+                totalMemory.toString(),
+                availableMemory.toString(),
+                runTime,
+                startTime,
+                readBytes.toString(),
+                writtenBytes.toString(),
+                messagesSizeBytes.toString(),
+                streamsCount,
+                topicsCount,
+                partitionsCount,
+                segmentsCount,
+                messagesCount,
+                clientsCount,
+                consumerGroupsCount,
+                hostname,
+                osName,
+                osVersion,
+                kernelVersion);
+    }
+
+    static ClientInfoDetails readClientInfoDetails(ByteBuf response) {
+        var clientInfo = readClientInfo(response);
+        var consumerGroups = new ArrayList<ConsumerGroupInfo>();
+        for (int i = 0; i < clientInfo.consumerGroupsCount(); i++) {
+            consumerGroups.add(readConsumerGroupInfo(response));
+        }
+
+        return new ClientInfoDetails(clientInfo, consumerGroups);
+    }
+
+    static ClientInfo readClientInfo(ByteBuf response) {
+        var clientId = response.readUnsignedIntLE();
+        var userId = response.readUnsignedIntLE();
+        var userIdOptional = Optional.<Long>empty();
+        if (userId != 0) {
+            userIdOptional = Optional.of(userId);
+        }
+        var transport = response.readByte();
+        var transportString = "Tcp";
+        if (transport == 2) {
+            transportString = "Quic";
+        }
+        var addressLength = response.readUnsignedIntLE();
+        var address = response.readCharSequence(toInt(addressLength), StandardCharsets.UTF_8).toString();
+        var consumerGroupsCount = response.readUnsignedIntLE();
+        return new ClientInfo(clientId, userIdOptional, address, transportString, consumerGroupsCount);
+    }
+
+    static ConsumerGroupInfo readConsumerGroupInfo(ByteBuf response) {
+        var streamId = response.readUnsignedIntLE();
+        var topicId = response.readUnsignedIntLE();
+        var groupId = response.readUnsignedIntLE();
+
+        return new ConsumerGroupInfo(streamId, topicId, groupId);
     }
 
     private static BigInteger readU64AsBigInteger(ByteBuf buffer) {
