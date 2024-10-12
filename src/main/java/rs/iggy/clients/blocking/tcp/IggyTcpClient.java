@@ -12,6 +12,7 @@ public class IggyTcpClient implements IggyClient {
     private final ConsumerOffsetTcpClient consumerOffsetsClient;
     private final MessagesTcpClient messagesClient;
     private final SystemTcpClient systemClient;
+    private final PersonalAccessTokensTcpClient personalAccessTokensClient;
 
     public IggyTcpClient(String host, Integer port) {
         TcpConnectionHandler connection = new TcpConnectionHandler(host, port);
@@ -23,6 +24,7 @@ public class IggyTcpClient implements IggyClient {
         consumerOffsetsClient = new ConsumerOffsetTcpClient(connection);
         messagesClient = new MessagesTcpClient(connection);
         systemClient = new SystemTcpClient(connection);
+        personalAccessTokensClient = new PersonalAccessTokensTcpClient(connection);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class IggyTcpClient implements IggyClient {
 
     @Override
     public PersonalAccessTokensClient personalAccessTokens() {
-        throw new UnsupportedOperationException();
+        return personalAccessTokensClient;
     }
 
 }

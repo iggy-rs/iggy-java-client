@@ -8,6 +8,8 @@ import rs.iggy.consumergroup.ConsumerGroupMember;
 import rs.iggy.consumeroffset.ConsumerOffsetInfo;
 import rs.iggy.message.*;
 import rs.iggy.partition.Partition;
+import rs.iggy.personalaccesstoken.PersonalAccessTokenInfo;
+import rs.iggy.personalaccesstoken.RawPersonalAccessToken;
 import rs.iggy.stream.StreamBase;
 import rs.iggy.stream.StreamDetails;
 import rs.iggy.system.ClientInfo;
@@ -297,7 +299,13 @@ final class BytesDeserializer {
             var topicPermissions = readTopicPermissions(response);
             topicPermissionsMap.put(topicId, topicPermissions);
         }
-        return new StreamPermissions(manageStream, readStream, manageTopics, readTopics, pollMessages, sendMessages, topicPermissionsMap);
+        return new StreamPermissions(manageStream,
+                readStream,
+                manageTopics,
+                readTopics,
+                pollMessages,
+                sendMessages,
+                topicPermissionsMap);
     }
 
     static TopicPermissions readTopicPermissions(ByteBuf response) {
@@ -339,6 +347,20 @@ final class BytesDeserializer {
         var usernameLength = response.readByte();
         var username = response.readCharSequence(usernameLength, StandardCharsets.UTF_8).toString();
         return new UserInfo(userId, createdAt, status, username);
+    }
+
+    static RawPersonalAccessToken readRawPersonalAccessToken(ByteBuf response) {
+        var tokenLength = response.readByte();
+        var token = response.readCharSequence(tokenLength, StandardCharsets.UTF_8).toString();
+        return new RawPersonalAccessToken(token);
+    }
+
+    static PersonalAccessTokenInfo readPersonalAccessTokenInfo(ByteBuf response) {
+        var nameLength = response.readByte();
+        var name = response.readCharSequence(nameLength, StandardCharsets.UTF_8).toString();
+        var expiry = readU64AsBigInteger(response);
+        Optional<BigInteger> expiryOptional = expiry.equals(BigInteger.ZERO) ? Optional.empty() : Optional.of(expiry);
+        return new PersonalAccessTokenInfo(name, expiryOptional);
     }
 
     private static BigInteger readU64AsBigInteger(ByteBuf buffer) {
