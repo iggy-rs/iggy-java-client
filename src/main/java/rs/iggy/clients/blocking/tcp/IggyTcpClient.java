@@ -64,4 +64,10 @@ public class IggyTcpClient implements IggyClient {
     public MessagesClient messages() {
         return messagesClient;
     }
+
+    @Override
+    public PersonalAccessTokensClient personalAccessTokens() {
+        throw new UnsupportedOperationException();
+    }
+
 }

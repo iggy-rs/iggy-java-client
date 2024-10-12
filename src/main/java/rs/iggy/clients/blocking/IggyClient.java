@@ -18,4 +18,6 @@ public interface IggyClient {
 
     MessagesClient messages();
 
+    PersonalAccessTokensClient personalAccessTokens();
+
 }

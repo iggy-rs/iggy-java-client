@@ -12,6 +12,7 @@ public class IggyHttpClient implements IggyClient {
     private final ConsumerGroupsHttpClient consumerGroupsClient;
     private final ConsumerOffsetsHttpClient consumerOffsetsClient;
     private final MessagesHttpClient messagesClient;
+    private final PersonalAccessTokensHttpClient personalAccessTokensHttpClient;
 
     public IggyHttpClient(String url) {
         HttpClient httpClient = new HttpClient(url);
@@ -23,6 +24,7 @@ public class IggyHttpClient implements IggyClient {
         consumerGroupsClient = new ConsumerGroupsHttpClient(httpClient);
         consumerOffsetsClient = new ConsumerOffsetsHttpClient(httpClient);
         messagesClient = new MessagesHttpClient(httpClient);
+        personalAccessTokensHttpClient = new PersonalAccessTokensHttpClient(httpClient);
     }
 
     @Override
@@ -63,6 +65,11 @@ public class IggyHttpClient implements IggyClient {
     @Override
     public MessagesClient messages() {
         return messagesClient;
+    }
+
+    @Override
+    public PersonalAccessTokensClient personalAccessTokens() {
+        return personalAccessTokensHttpClient;
     }
 
 }
