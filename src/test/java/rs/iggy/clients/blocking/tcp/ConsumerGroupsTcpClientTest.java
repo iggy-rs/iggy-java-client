@@ -26,14 +26,14 @@ class ConsumerGroupsTcpClientTest extends ConsumerGroupsClientBaseTest {
         consumerGroupsClient.joinConsumerGroup(42L, 42L, group.id());
 
         // then
-        group = consumerGroupsClient.getConsumerGroup(42L, 42L, group.id());
+        group = consumerGroupsClient.getConsumerGroup(42L, 42L, group.id()).get();
         assertThat(group.membersCount()).isEqualTo(1);
 
         // when
         consumerGroupsClient.leaveConsumerGroup(42L, 42L, group.id());
 
         // then
-        group = consumerGroupsClient.getConsumerGroup(42L, 42L, group.id());
+        group = consumerGroupsClient.getConsumerGroup(42L, 42L, group.id()).get();
         assertThat(group.membersCount()).isEqualTo(0);
     }
 

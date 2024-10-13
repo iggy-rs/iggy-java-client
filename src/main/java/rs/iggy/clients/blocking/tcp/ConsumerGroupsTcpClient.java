@@ -32,12 +32,15 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
+    public Optional<ConsumerGroupDetails> getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
         var response = connection.send(GET_CONSUMER_GROUP_CODE, payload);
-        return readConsumerGroupDetails(response);
+        if (response.isReadable()) {
+            return Optional.of(readConsumerGroupDetails(response));
+        }
+        return Optional.empty();
     }
 
     @Override

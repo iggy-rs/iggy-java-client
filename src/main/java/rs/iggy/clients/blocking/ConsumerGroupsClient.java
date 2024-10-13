@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface ConsumerGroupsClient {
 
-    default ConsumerGroupDetails getConsumerGroup(Long streamId, Long topicId, Long groupId) {
+    default Optional<ConsumerGroupDetails> getConsumerGroup(Long streamId, Long topicId, Long groupId) {
         return getConsumerGroup(StreamId.of(streamId), TopicId.of(topicId), ConsumerId.of(groupId));
     }
 
-    ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId);
+    Optional<ConsumerGroupDetails> getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId);
 
     default List<ConsumerGroup> getConsumerGroups(Long streamId, Long topicId) {
         return getConsumerGroups(StreamId.of(streamId), TopicId.of(topicId));

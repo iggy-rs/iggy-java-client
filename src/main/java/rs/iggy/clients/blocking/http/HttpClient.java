@@ -8,6 +8,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,33 +43,39 @@ class HttpClient {
     }
 
     private <T> T execute(ClassicHttpRequest request, JavaType type) {
-        try (var client = HttpClients.createDefault()) {
-            return client.execute(request, response -> {
-                handleErrorResponse(response);
-                return objectMapper.readValue(response.getEntity().getContent(), type);
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return executeRequest(request, response -> handleTypedResponse(response, type));
+    }
+
+    public <T> Optional<T> executeWithOptionalResponse(ClassicHttpRequest request, Class<T> clazz) {
+        return executeWithOptionalResponse(request, objectMapper.constructType(clazz));
+    }
+
+    private <T> Optional<T> executeWithOptionalResponse(ClassicHttpRequest request, JavaType type) {
+        return executeRequest(request, response -> {
+            if (response.getCode() == 404) {
+                return Optional.empty();
+            }
+            return Optional.of(handleTypedResponse(response, type));
+        });
     }
 
     String executeWithStringResponse(ClassicHttpRequest request) {
-        try (var client = HttpClients.createDefault()) {
-            return client.execute(request, response -> {
-                handleErrorResponse(response);
-                return new String(response.getEntity().getContent().readAllBytes());
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return executeRequest(request, response -> {
+            handleErrorResponse(response);
+            return new String(response.getEntity().getContent().readAllBytes());
+        });
     }
 
     void execute(ClassicHttpRequest request) {
+        executeRequest(request, response -> {
+            handleErrorResponse(response);
+            return "";
+        });
+    }
+
+    private <T> T executeRequest(ClassicHttpRequest request, HttpClientResponseHandler<T> responseHandler) {
         try (var client = HttpClients.createDefault()) {
-            client.execute(request, response -> {
-                handleErrorResponse(response);
-                return "";
-            });
+            return client.execute(request, responseHandler);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,6 +119,11 @@ class HttpClient {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private <T> T handleTypedResponse(ClassicHttpResponse response, JavaType type) throws IOException {
+        handleErrorResponse(response);
+        return objectMapper.readValue(response.getEntity().getContent(), type);
     }
 
     private void handleErrorResponse(ClassicHttpResponse response) throws IOException {

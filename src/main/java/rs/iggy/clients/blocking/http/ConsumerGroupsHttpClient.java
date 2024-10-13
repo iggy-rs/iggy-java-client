@@ -19,9 +19,9 @@ class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
     }
 
     @Override
-    public ConsumerGroupDetails getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
+    public Optional<ConsumerGroupDetails> getConsumerGroup(StreamId streamId, TopicId topicId, ConsumerId groupId) {
         var request = httpClient.prepareGetRequest(path(streamId, topicId) + "/" + groupId);
-        return httpClient.execute(request, ConsumerGroupDetails.class);
+        return httpClient.executeWithOptionalResponse(request, ConsumerGroupDetails.class);
     }
 
     @Override

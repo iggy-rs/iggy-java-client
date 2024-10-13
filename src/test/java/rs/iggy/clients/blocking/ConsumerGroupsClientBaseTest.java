@@ -39,9 +39,9 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
                 ConsumerId.of("consumer-group-42"));
 
         // then
-        assertThat(consumerGroupById).isNotNull();
-        assertThat(consumerGroupById.id()).isEqualTo(42L);
-        assertThat(consumerGroupById.name()).isEqualTo("consumer-group-42");
+        assertThat(consumerGroupById).isPresent();
+        assertThat(consumerGroupById.get().id()).isEqualTo(42L);
+        assertThat(consumerGroupById.get().name()).isEqualTo("consumer-group-42");
         assertThat(consumerGroupById).isEqualTo(consumerGroupByName);
 
         // when
@@ -49,6 +49,7 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
 
         // then
         assertThat(consumerGroupsClient.getConsumerGroups(42L, 42L)).isEmpty();
+        assertThat(consumerGroupsClient.getConsumerGroup(42L, 42L, 42L)).isEmpty();
     }
 
     @Test
