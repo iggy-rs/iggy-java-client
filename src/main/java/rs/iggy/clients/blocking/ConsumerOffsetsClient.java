@@ -15,10 +15,10 @@ public interface ConsumerOffsetsClient {
 
     void storeConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer, BigInteger offset);
 
-    default ConsumerOffsetInfo getConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId) {
+    default Optional<ConsumerOffsetInfo> getConsumerOffset(Long streamId, Long topicId, Optional<Long> partitionId, Long consumerId) {
         return getConsumerOffset(StreamId.of(streamId), TopicId.of(topicId), partitionId, Consumer.of(consumerId));
     }
 
-    ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer);
+    Optional<ConsumerOffsetInfo> getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer);
 
 }

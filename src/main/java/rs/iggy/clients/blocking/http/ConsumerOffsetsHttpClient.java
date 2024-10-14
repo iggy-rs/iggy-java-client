@@ -26,11 +26,11 @@ class ConsumerOffsetsHttpClient implements ConsumerOffsetsClient {
     }
 
     @Override
-    public ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer) {
+    public Optional<ConsumerOffsetInfo> getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer) {
         var request = httpClient.prepareGetRequest(path(streamId, topicId),
                 new BasicNameValuePair("consumer_id", consumer.id().toString()),
                 new BasicNameValuePair("partition_id", partitionId.map(Object::toString).orElse(DEFAULT_PARTITION_ID)));
-        return httpClient.execute(request, ConsumerOffsetInfo.class);
+        return httpClient.executeWithOptionalResponse(request, ConsumerOffsetInfo.class);
     }
 
     private static String path(StreamId streamId, TopicId topicId) {

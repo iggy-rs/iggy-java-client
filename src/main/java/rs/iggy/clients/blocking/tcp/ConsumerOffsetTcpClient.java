@@ -34,15 +34,17 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
     }
 
     @Override
-    public ConsumerOffsetInfo getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer) {
+    public Optional<ConsumerOffsetInfo> getConsumerOffset(StreamId streamId, TopicId topicId, Optional<Long> partitionId, Consumer consumer) {
         var payload = toBytes(consumer);
         payload.writeBytes(toBytes(streamId));
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionId.orElse(0L).intValue());
 
         var response = connection.send(GET_CONSUMER_OFFSET_CODE, payload);
-
-        return readConsumerOffsetInfo(response);
+        if (response.isReadable()) {
+            return Optional.of(readConsumerOffsetInfo(response));
+        }
+        return Optional.empty();
     }
 
 }

@@ -58,7 +58,7 @@ public abstract class ConsumerGroupsClientBaseTest extends IntegrationTest {
         setUpStreamAndTopic();
         consumerGroupsClient.createConsumerGroup(42L, 42L, Optional.of(42L), "consumer-group-42");
         var consumerGroup = consumerGroupsClient.getConsumerGroup(42L, 42L, 42L);
-        assert consumerGroup != null;
+        assert consumerGroup.isPresent();
 
         // when
         consumerGroupsClient.deleteConsumerGroup(StreamId.of(42L), TopicId.of(42L),
