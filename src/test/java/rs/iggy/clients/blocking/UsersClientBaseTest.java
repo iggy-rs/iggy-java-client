@@ -34,10 +34,10 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
         login();
 
         // when
-        UserInfoDetails user = usersClient.getUser(1L);
+        var user = usersClient.getUser(1L);
 
         // then
-        assertThat(user).isNotNull();
+        assertThat(user).isPresent();
     }
 
     @Test
@@ -93,8 +93,12 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
 
         // then
         var updatedUser = usersClient.getUser(user.id());
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.permissions().map(Permissions::global).map(GlobalPermissions::manageServers).orElse(true)).isFalse();
+        assertThat(updatedUser).isPresent();
+        assertThat(updatedUser.get()
+                .permissions()
+                .map(Permissions::global)
+                .map(GlobalPermissions::manageServers)
+                .orElse(true)).isFalse();
     }
 
     @Test
@@ -109,6 +113,18 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
 
         // then
         assertThat(newLogin).isNotNull();
+    }
+
+    @Test
+    void shouldReturnEmptyForNonExistingUser() {
+        // given
+        login();
+
+        // when
+        var user = usersClient.getUser(404L);
+
+        // then
+        assertThat(user).isEmpty();
     }
 
     private static @NotNull GlobalPermissions createGlobalPermissions(boolean manageServers) {

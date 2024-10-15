@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface TopicsClient {
 
-    default TopicDetails getTopic(Long streamId, Long topicId) {
+    default Optional<TopicDetails> getTopic(Long streamId, Long topicId) {
         return getTopic(StreamId.of(streamId), TopicId.of(topicId));
     }
 
-    TopicDetails getTopic(StreamId streamId, TopicId topicId);
+    Optional<TopicDetails> getTopic(StreamId streamId, TopicId topicId);
 
     default List<Topic> getTopics(Long streamId) {
         return getTopics(StreamId.of(streamId));

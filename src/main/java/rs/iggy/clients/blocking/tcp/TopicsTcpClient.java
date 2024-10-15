@@ -30,11 +30,14 @@ class TopicsTcpClient implements TopicsClient {
     }
 
     @Override
-    public TopicDetails getTopic(StreamId streamId, TopicId topicId) {
+    public Optional<TopicDetails> getTopic(StreamId streamId, TopicId topicId) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         var response = connection.send(GET_TOPIC_CODE, payload);
-        return readTopicDetails(response);
+        if (response.isReadable()) {
+            return Optional.of(readTopicDetails(response));
+        }
+        return Optional.empty();
     }
 
     @Override

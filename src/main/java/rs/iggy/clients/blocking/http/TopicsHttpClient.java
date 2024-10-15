@@ -22,9 +22,9 @@ class TopicsHttpClient implements TopicsClient {
     }
 
     @Override
-    public TopicDetails getTopic(StreamId streamId, TopicId topicId) {
+    public Optional<TopicDetails> getTopic(StreamId streamId, TopicId topicId) {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId + TOPICS + "/" + topicId);
-        return httpClient.execute(request, TopicDetails.class);
+        return httpClient.executeWithOptionalResponse(request, TopicDetails.class);
     }
 
     @Override

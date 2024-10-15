@@ -30,10 +30,13 @@ class UsersTcpClient implements UsersClient {
     }
 
     @Override
-    public UserInfoDetails getUser(UserId userId) {
+    public Optional<UserInfoDetails> getUser(UserId userId) {
         var payload = toBytes(userId);
         var response = connection.send(GET_USER_CODE, payload);
-        return readUserInfoDetails(response);
+        if (response.isReadable()) {
+            return Optional.of(readUserInfoDetails(response));
+        }
+        return Optional.empty();
     }
 
     @Override

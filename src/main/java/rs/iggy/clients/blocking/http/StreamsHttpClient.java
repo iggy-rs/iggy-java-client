@@ -18,9 +18,9 @@ class StreamsHttpClient implements StreamsClient {
     }
 
     @Override
-    public StreamDetails getStream(StreamId streamId) {
+    public Optional<StreamDetails> getStream(StreamId streamId) {
         var request = httpClient.prepareGetRequest(STREAMS + "/" + streamId);
-        return httpClient.execute(request, StreamDetails.class);
+        return httpClient.executeWithOptionalResponse(request, StreamDetails.class);
     }
 
     @Override

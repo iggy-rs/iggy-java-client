@@ -39,10 +39,13 @@ class StreamsTcpClient implements StreamsClient {
     }
 
     @Override
-    public StreamDetails getStream(StreamId streamId) {
+    public Optional<StreamDetails> getStream(StreamId streamId) {
         var payload = toBytes(streamId);
         var response = connection.send(GET_STREAM_CODE, payload);
-        return readStreamDetails(response);
+        if (response.isReadable()) {
+            return Optional.of(readStreamDetails(response));
+        }
+        return Optional.empty();
     }
 
     @Override

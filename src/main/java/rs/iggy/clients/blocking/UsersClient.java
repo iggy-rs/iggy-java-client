@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface UsersClient {
 
-    default UserInfoDetails getUser(Long userId) {
+    default Optional<UserInfoDetails> getUser(Long userId) {
         return getUser(UserId.of(userId));
     }
 
-    UserInfoDetails getUser(UserId userId);
+    Optional<UserInfoDetails> getUser(UserId userId);
 
     List<UserInfo> getUsers();
 

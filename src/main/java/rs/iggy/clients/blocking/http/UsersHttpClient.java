@@ -17,9 +17,9 @@ class UsersHttpClient implements UsersClient {
     }
 
     @Override
-    public UserInfoDetails getUser(UserId userId) {
+    public Optional<UserInfoDetails> getUser(UserId userId) {
         var request = httpClient.prepareGetRequest(USERS + "/" + userId);
-        return httpClient.execute(request, UserInfoDetails.class);
+        return httpClient.executeWithOptionalResponse(request, UserInfoDetails.class);
     }
 
     @Override

@@ -20,10 +20,11 @@ public abstract class StreamClientBaseTest extends IntegrationTest {
     void shouldCreateAndDeleteStream() {
         // when
         streamsClient.createStream(Optional.of(42L), "test-stream");
-        var stream = streamsClient.getStream(42L);
+        var streamOptional = streamsClient.getStream(42L);
 
         // then
-        assertThat(stream).isNotNull();
+        assertThat(streamOptional).isPresent();
+        var stream = streamOptional.get();
         assertThat(stream.id()).isEqualTo(42L);
         assertThat(stream.name()).isEqualTo("test-stream");
 
@@ -50,10 +51,20 @@ public abstract class StreamClientBaseTest extends IntegrationTest {
         streamsClient.updateStream(42L, "test-stream-new");
 
         // then
-        var stream = streamsClient.getStream(42L);
+        var streamOptional = streamsClient.getStream(42L);
 
-        assertThat(stream).isNotNull();
+        assertThat(streamOptional).isPresent();
+        var stream = streamOptional.get();
         assertThat(stream.id()).isEqualTo(42L);
         assertThat(stream.name()).isEqualTo("test-stream-new");
+    }
+
+    @Test
+    void shouldReturnEmptyForNonExistingStream() {
+        // when
+        var stream = streamsClient.getStream(333L);
+
+        // then
+        assertThat(stream).isEmpty();
     }
 }

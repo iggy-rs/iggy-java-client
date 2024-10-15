@@ -3,7 +3,6 @@ package rs.iggy.clients.blocking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rs.iggy.user.IdentityInfo;
-import rs.iggy.user.UserInfoDetails;
 import java.math.BigInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,10 +55,10 @@ public abstract class PersonalAccessTokensBaseTest extends IntegrationTest {
         assertThat(identityInfo).isNotNull();
 
         // when
-        UserInfoDetails user = client.users().getUser(1L);
+        var user = client.users().getUser(1L);
 
         // then
-        assertThat(user).isNotNull();
+        assertThat(user).isPresent();
     }
 
 }

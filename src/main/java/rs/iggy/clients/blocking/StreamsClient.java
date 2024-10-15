@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface StreamsClient {
 
-    default StreamDetails getStream(Long streamId) {
+    default Optional<StreamDetails> getStream(Long streamId) {
         return getStream(StreamId.of(streamId));
     }
 
-    StreamDetails getStream(StreamId streamId);
+    Optional<StreamDetails> getStream(StreamId streamId);
 
     List<StreamBase> getStreams();
 

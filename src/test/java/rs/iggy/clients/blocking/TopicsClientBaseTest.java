@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import rs.iggy.topic.CompressionAlgorithm;
-import rs.iggy.topic.TopicDetails;
 import java.math.BigInteger;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -34,10 +33,11 @@ public abstract class TopicsClientBaseTest extends IntegrationTest {
                 BigInteger.ZERO,
                 empty(),
                 "test-topic");
-        var topic = topicsClient.getTopic(42L, 42L);
+        var topicOptional = topicsClient.getTopic(42L, 42L);
 
         // then
-        assertThat(topic).isNotNull();
+        assertThat(topicOptional).isPresent();
+        var topic = topicOptional.get();
         assertThat(topic.id()).isEqualTo(42L);
         assertThat(topic.name()).isEqualTo("test-topic");
 
@@ -71,9 +71,18 @@ public abstract class TopicsClientBaseTest extends IntegrationTest {
                 "new-name");
 
         // then
-        TopicDetails updatedTopic = topicsClient.getTopic(42L, 42L);
+        var updatedTopic = topicsClient.getTopic(42L, 42L).get();
         assertThat(updatedTopic.name()).isEqualTo("new-name");
         assertThat(updatedTopic.messageExpiry()).isEqualTo(BigInteger.valueOf(5000));
+    }
+
+    @Test
+    void shouldReturnEmptyForNonExistingTopic() {
+        // when
+        var topic = topicsClient.getTopic(42L, 404L);
+
+        // then
+        assertThat(topic).isEmpty();
     }
 
 }
