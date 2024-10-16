@@ -16,7 +16,7 @@ import rs.iggy.user.TopicPermissions;
 import java.math.BigInteger;
 import java.util.Map;
 
-final class BytesSerializer {
+public final class BytesSerializer {
 
     private BytesSerializer() {
     }
@@ -63,7 +63,7 @@ final class BytesSerializer {
 
     static ByteBuf toBytes(MessageToSend message) {
         var buffer = Unpooled.buffer();
-        buffer.writeBytes(toBytesAsU128(message.id()));
+        buffer.writeBytes(message.id().toBytes());
         message.headers().ifPresentOrElse((headers) -> {
             var headersBytes = toBytes(headers);
             buffer.writeIntLE(headersBytes.readableBytes());
@@ -180,7 +180,7 @@ final class BytesSerializer {
         return buffer;
     }
 
-    static ByteBuf toBytesAsU128(BigInteger value) {
+    public static ByteBuf toBytesAsU128(BigInteger value) {
         if (value.signum() == -1) {
             throw new IllegalArgumentException("Negative value cannot be serialized to unsigned 128: " + value);
         }

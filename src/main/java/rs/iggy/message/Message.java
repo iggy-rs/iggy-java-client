@@ -8,7 +8,7 @@ public record Message(
         BigInteger offset,
         MessageState state,
         BigInteger timestamp,
-        BigInteger id,
+        MessageId id,
         Long checksum,
         Optional<Map<String, HeaderValue>> headers,
         byte[] payload

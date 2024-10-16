@@ -2,12 +2,8 @@ package rs.iggy.clients.blocking;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import rs.iggy.message.MessageToSend;
-import rs.iggy.message.Partitioning;
-import rs.iggy.message.PollingKind;
-import rs.iggy.message.PollingStrategy;
+import rs.iggy.message.*;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.UUID;
 import static java.util.Optional.empty;
@@ -32,7 +28,7 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.partitionId(1L),
-                List.of(new MessageToSend(getRandomId(), text.getBytes(), empty())));
+                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);
@@ -49,7 +45,7 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.balanced(),
-                List.of(new MessageToSend(getRandomId(), text.getBytes(), empty())));
+                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);
@@ -66,24 +62,13 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.messagesKey("test-key"),
-                List.of(new MessageToSend(getRandomId(), text.getBytes(), empty())));
+                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);
 
         // then
         assertThat(polledMessages.messages()).hasSize(1);
-    }
-
-    private static BigInteger getRandomId() {
-        return new BigInteger(1, uuidToBytes(UUID.randomUUID()));
-    }
-
-    private static byte[] uuidToBytes(UUID uuid) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
-        byteBuffer.putLong(uuid.getMostSignificantBits());
-        byteBuffer.putLong(uuid.getLeastSignificantBits());
-        return byteBuffer.array();
     }
 
 }

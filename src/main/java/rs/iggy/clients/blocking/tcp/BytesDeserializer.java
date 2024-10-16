@@ -150,7 +150,7 @@ final class BytesDeserializer {
         var stateCode = response.readByte();
         var state = MessageState.fromCode(stateCode);
         var timestamp = readU64AsBigInteger(response);
-        var id = readU128AsBigInteger(response);
+        var id = readBytesMessageId(response);
         var checksum = response.readUnsignedIntLE();
         var headersLength = response.readUnsignedIntLE();
         var headers = Optional.<Map<String, HeaderValue>>empty();
@@ -370,11 +370,11 @@ final class BytesDeserializer {
         return new BigInteger(bytesArray);
     }
 
-    private static BigInteger readU128AsBigInteger(ByteBuf buffer) {
-        var bytesArray = new byte[17];
-        buffer.readBytes(bytesArray, 0, 16);
+    private static BytesMessageId readBytesMessageId(ByteBuf buffer) {
+        var bytesArray = new byte[16];
+        buffer.readBytes(bytesArray);
         ArrayUtils.reverse(bytesArray);
-        return new BigInteger(bytesArray);
+        return new BytesMessageId(bytesArray);
     }
 
     private static int toInt(Long size) {
