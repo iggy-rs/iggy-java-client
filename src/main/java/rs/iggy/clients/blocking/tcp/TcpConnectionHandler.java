@@ -2,12 +2,14 @@ package rs.iggy.clients.blocking.tcp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 import reactor.netty.tcp.TcpClient;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 final class TcpConnectionHandler {
 
@@ -16,15 +18,15 @@ final class TcpConnectionHandler {
     private static final int RESPONSE_INITIAL_BYTES_LENGTH = 8;
 
     private final Connection connection;
-    private final Queue<byte[]> responses = new ConcurrentLinkedQueue<>();
-    private final Semaphore semaphore = new Semaphore(0);
+    private final BlockingQueue<IggyResponse> responses = new LinkedBlockingQueue<>();
 
     TcpConnectionHandler(String host, Integer port) {
-        this.connection = TcpClient.create().host(host).port(port).connectNow();
-        this.connection.inbound().receive().asByteArray().subscribe(response -> {
-            responses.add(response);
-            semaphore.release();
-        });
+        this.connection = TcpClient.create()
+                .host(host)
+                .port(port)
+                .doOnConnected(conn -> conn.addHandlerLast(new IggyResponseDecoder()))
+                .connectNow();
+        this.connection.inbound().receiveObject().ofType(IggyResponse.class).subscribe(responses::add);
     }
 
     ByteBuf send(int command) {
@@ -39,37 +41,41 @@ final class TcpConnectionHandler {
         buffer.writeBytes(payload);
 
         connection.outbound().send(Mono.just(buffer)).then().block();
-        try { //TODO(mm): 6.10.2024 validate approach and error handling
-            semaphore.acquire();
+        try {
+            IggyResponse response = responses.take();
+            return handleResponse(response);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        var response = responses.poll();
-        if (response == null) {
-            throw new RuntimeException("No response");
-        }
-
-        var responseBuffer = Unpooled.wrappedBuffer(response);
-        if (!responseBuffer.isReadable(RESPONSE_INITIAL_BYTES_LENGTH)) {
-            throw new RuntimeException("Received an invalid or empty response");
-        }
-
-        var status = responseBuffer.readUnsignedIntLE();
-        var responseLengthL = responseBuffer.readUnsignedIntLE();
-        // unsafe cast
-        var responseLength = (int) responseLengthL;
-
-        return handleResponse(status, responseLength, responseBuffer);
     }
 
-    private ByteBuf handleResponse(long status, int responseLength, ByteBuf responseBuffer) {
-        if (status != 0) {
-            throw new RuntimeException("Received an invalid response with status " + status);
+    private ByteBuf handleResponse(IggyResponse response) {
+        if (response.status() != 0) {
+            throw new RuntimeException("Received an invalid response with status " + response.status());
         }
-        if (responseLength == 0) {
+        if (response.length() == 0) {
             return Unpooled.EMPTY_BUFFER;
         }
-        return responseBuffer.readBytes(responseLength);
+        return response.payload();
+    }
+
+    static class IggyResponseDecoder extends ByteToMessageDecoder {
+        @Override
+        protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) {
+            if (byteBuf.readableBytes() < RESPONSE_INITIAL_BYTES_LENGTH) {
+                return;
+            }
+            var status = byteBuf.readUnsignedIntLE();
+            var responseLength = byteBuf.readUnsignedIntLE();
+            if (byteBuf.readableBytes() < responseLength) {
+                return;
+            }
+            var length = Long.valueOf(responseLength).intValue();
+            list.add(new IggyResponse(status, length, byteBuf.readBytes(length)));
+        }
+    }
+
+    record IggyResponse(long status, int length, ByteBuf payload) {
     }
 
 }
