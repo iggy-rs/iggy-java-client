@@ -65,9 +65,11 @@ final class TcpConnectionHandler {
             if (byteBuf.readableBytes() < RESPONSE_INITIAL_BYTES_LENGTH) {
                 return;
             }
+            byteBuf.markReaderIndex();
             var status = byteBuf.readUnsignedIntLE();
             var responseLength = byteBuf.readUnsignedIntLE();
             if (byteBuf.readableBytes() < responseLength) {
+                byteBuf.resetReaderIndex();
                 return;
             }
             var length = Long.valueOf(responseLength).intValue();
