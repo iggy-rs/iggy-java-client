@@ -1,12 +1,19 @@
 plugins {
     id("java-library")
+    id("maven-publish")
+    id("org.jreleaser") version ("1.14.0")
 }
 
 group = "rs.iggy"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 dependencies {
@@ -28,4 +35,62 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifactId = "iggy-java-sdk"
+
+            from(components["java"])
+
+            pom {
+                name = "Iggy Java Client SDK"
+                description = "Official Java client SDK for Iggy.rs message streaming"
+                url = "https://github.com/iggy-rs/iggy-java-client"
+                licenses {
+                    license {
+                        name = "MIT License"
+                        url = "https://github.com/iggy-rs/iggy-java-client/blob/main/LICENSE"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "mmodzelewski"
+                        name = "Maciej Modzelewski"
+                        email = "maciej@modzelewski.dev"
+                    }
+                }
+                scm {
+                    url = "https://github.com/iggy-rs/iggy-java-client"
+                    connection = "scm:git:git://github.com/iggy-rs/iggy-java-client.git"
+                    developerConnection = "scm:git:git://github.com/iggy-rs/iggy-java-client.git"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
+        }
+    }
+}
+
+jreleaser {
+    signing {
+        setActive("ALWAYS")
+        armored = true
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                create("sonatype") {
+                    setActive("ALWAYS")
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepository("build/staging-deploy")
+                }
+            }
+        }
+    }
 }
