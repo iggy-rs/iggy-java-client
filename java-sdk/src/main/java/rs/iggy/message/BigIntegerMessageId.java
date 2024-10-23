@@ -6,10 +6,15 @@ import java.math.BigInteger;
 
 public class BigIntegerMessageId implements MessageId {
 
+    private static final BigIntegerMessageId DEFAULT_ID = new BigIntegerMessageId(BigInteger.ZERO);
     private final BigInteger value;
 
     public BigIntegerMessageId(BigInteger value) {
         this.value = value;
+    }
+
+    public static BigIntegerMessageId defaultId() {
+        return DEFAULT_ID;
     }
 
     @Override

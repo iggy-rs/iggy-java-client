@@ -7,6 +7,10 @@ import java.math.BigInteger;
 
 public interface MessageId {
 
+    static MessageId serverGenerated() {
+        return BigIntegerMessageId.defaultId();
+    }
+
     @JsonCreator
     static MessageId from(BigInteger bigInteger) {
         return new BigIntegerMessageId(bigInteger);

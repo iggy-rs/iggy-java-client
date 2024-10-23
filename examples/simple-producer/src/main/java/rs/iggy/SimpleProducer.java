@@ -5,10 +5,8 @@ import org.slf4j.LoggerFactory;
 import rs.iggy.clients.blocking.tcp.IggyTcpClient;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
-import rs.iggy.message.BigIntegerMessageId;
 import rs.iggy.message.Message;
 import rs.iggy.message.Partitioning;
-import rs.iggy.message.PartitioningKind;
 import rs.iggy.stream.StreamDetails;
 import rs.iggy.topic.CompressionAlgorithm;
 import rs.iggy.topic.TopicDetails;
@@ -33,13 +31,8 @@ public class SimpleProducer {
 
         int counter = 0;
         while (counter++ < 1000) {
-            var text = "message from simple producer " + counter;
-            var message = new Message(new BigIntegerMessageId(BigInteger.ZERO), text.getBytes(), empty());
-            client.messages()
-                    .sendMessages(STREAM_ID,
-                            TOPIC_ID,
-                            new Partitioning(PartitioningKind.Balanced, new byte[0]),
-                            singletonList(message));
+            var message = Message.of("message from simple producer " + counter);
+            client.messages().sendMessages(STREAM_ID, TOPIC_ID, Partitioning.balanced(), singletonList(message));
             log.debug("Message {} sent", counter);
         }
 

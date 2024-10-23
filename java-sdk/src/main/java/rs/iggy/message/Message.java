@@ -8,4 +8,9 @@ public record Message(
         byte[] payload,
         Optional<Map<String, HeaderValue>> headers
 ) {
+
+    public static Message of(String payload) {
+        return new Message(MessageId.serverGenerated(), payload.getBytes(), Optional.empty());
+    }
+
 }

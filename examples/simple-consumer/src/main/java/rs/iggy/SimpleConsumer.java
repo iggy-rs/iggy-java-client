@@ -10,7 +10,6 @@ import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import rs.iggy.message.PolledMessage;
 import rs.iggy.message.PolledMessages;
-import rs.iggy.message.PollingKind;
 import rs.iggy.message.PollingStrategy;
 import rs.iggy.stream.StreamDetails;
 import rs.iggy.topic.CompressionAlgorithm;
@@ -46,8 +45,8 @@ public class SimpleConsumer {
                     .pollMessages(STREAM_ID,
                             TOPIC_ID,
                             empty(),
-                            new Consumer(Consumer.Kind.ConsumerGroup, GROUP_ID),
-                            new PollingStrategy(PollingKind.Next, BigInteger.ZERO),
+                            Consumer.group(GROUP_ID),
+                            PollingStrategy.next(),
                             10L,
                             true);
             messages.addAll(polledMessages.messages());
