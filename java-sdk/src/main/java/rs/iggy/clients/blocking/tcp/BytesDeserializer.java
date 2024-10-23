@@ -138,14 +138,14 @@ final class BytesDeserializer {
         var partitionId = response.readUnsignedIntLE();
         var currentOffset = readU64AsBigInteger(response);
         var _messagesCount = response.readUnsignedIntLE();
-        var messages = new ArrayList<Message>();
+        var messages = new ArrayList<PolledMessage>();
         while (response.isReadable()) {
-            messages.add(readMessage(response));
+            messages.add(readPolledMessage(response));
         }
         return new PolledMessages(partitionId, currentOffset, messages);
     }
 
-    static Message readMessage(ByteBuf response) {
+    static PolledMessage readPolledMessage(ByteBuf response) {
         var offset = readU64AsBigInteger(response);
         var stateCode = response.readByte();
         var state = MessageState.fromCode(stateCode);
@@ -171,7 +171,7 @@ final class BytesDeserializer {
         var payloadLength = response.readUnsignedIntLE();
         var payload = newByteArray(payloadLength);
         response.readBytes(payload);
-        return new Message(offset, state, timestamp, id, checksum, headers, payload);
+        return new PolledMessage(offset, state, timestamp, id, checksum, headers, payload);
     }
 
     static Stats readStats(ByteBuf response) {

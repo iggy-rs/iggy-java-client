@@ -6,7 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import rs.iggy.consumergroup.Consumer;
 import rs.iggy.identifier.Identifier;
 import rs.iggy.message.HeaderValue;
-import rs.iggy.message.MessageToSend;
+import rs.iggy.message.Message;
 import rs.iggy.message.Partitioning;
 import rs.iggy.message.PollingStrategy;
 import rs.iggy.user.GlobalPermissions;
@@ -61,7 +61,7 @@ public final class BytesSerializer {
         return buffer;
     }
 
-    static ByteBuf toBytes(MessageToSend message) {
+    static ByteBuf toBytes(Message message) {
         var buffer = Unpooled.buffer();
         buffer.writeBytes(message.id().toBytes());
         message.headers().ifPresentOrElse((headers) -> {

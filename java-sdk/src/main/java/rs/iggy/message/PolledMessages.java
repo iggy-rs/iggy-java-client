@@ -6,6 +6,6 @@ import java.util.List;
 public record PolledMessages(
         Long partitionId,
         BigInteger currentOffset,
-        List<Message> messages
+        List<PolledMessage> messages
 ) {
 }

@@ -28,7 +28,7 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.partitionId(1L),
-                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
+                List.of(new Message(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);
@@ -45,7 +45,7 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.balanced(),
-                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
+                List.of(new Message(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);
@@ -62,7 +62,7 @@ public abstract class MessagesClientBaseTest extends IntegrationTest {
         // when
         String text = "message from java sdk";
         messagesClient.sendMessages(42L, 42L, Partitioning.messagesKey("test-key"),
-                List.of(new MessageToSend(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
+                List.of(new Message(new UuidMessageId(UUID.randomUUID()), text.getBytes(), empty())));
 
         var polledMessages = messagesClient.pollMessages(42L, 42L, empty(), 0L,
                 new PollingStrategy(PollingKind.Last, BigInteger.TEN), 10L, false);

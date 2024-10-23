@@ -8,7 +8,7 @@ import rs.iggy.consumergroup.ConsumerGroupDetails;
 import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
-import rs.iggy.message.Message;
+import rs.iggy.message.PolledMessage;
 import rs.iggy.message.PolledMessages;
 import rs.iggy.message.PollingKind;
 import rs.iggy.message.PollingStrategy;
@@ -40,7 +40,7 @@ public class SimpleConsumer {
         createConsumerGroup(client);
         client.consumerGroups().joinConsumerGroup(STREAM_ID, TOPIC_ID, GROUP_ID);
 
-        List<Message> messages = new ArrayList<>();
+        List<PolledMessage> messages = new ArrayList<>();
         while (messages.size() < 1000) {
             PolledMessages polledMessages = client.messages()
                     .pollMessages(STREAM_ID,

@@ -5,7 +5,7 @@ import rs.iggy.clients.blocking.MessagesClient;
 import rs.iggy.consumergroup.Consumer;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
-import rs.iggy.message.MessageToSend;
+import rs.iggy.message.Message;
 import rs.iggy.message.Partitioning;
 import rs.iggy.message.PolledMessages;
 import rs.iggy.message.PollingStrategy;
@@ -33,7 +33,7 @@ class MessagesHttpClient implements MessagesClient {
     }
 
     @Override
-    public void sendMessages(StreamId streamId, TopicId topicId, Partitioning partitioning, List<MessageToSend> messages) {
+    public void sendMessages(StreamId streamId, TopicId topicId, Partitioning partitioning, List<Message> messages) {
         var request = httpClient.preparePostRequest(path(streamId, topicId), new SendMessages(partitioning, messages));
         httpClient.execute(request);
     }
@@ -42,6 +42,6 @@ class MessagesHttpClient implements MessagesClient {
         return "/streams/" + streamId + "/topics/" + topicId + "/messages";
     }
 
-    private record SendMessages(Partitioning partitioning, List<MessageToSend> messages) {
+    private record SendMessages(Partitioning partitioning, List<Message> messages) {
     }
 }

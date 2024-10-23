@@ -4,7 +4,7 @@ import rs.iggy.clients.blocking.MessagesClient;
 import rs.iggy.consumergroup.Consumer;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
-import rs.iggy.message.MessageToSend;
+import rs.iggy.message.Message;
 import rs.iggy.message.Partitioning;
 import rs.iggy.message.PolledMessages;
 import rs.iggy.message.PollingStrategy;
@@ -39,7 +39,7 @@ class MessagesTcpClient implements MessagesClient {
     }
 
     @Override
-    public void sendMessages(StreamId streamId, TopicId topicId, Partitioning partitioning, List<MessageToSend> messages) {
+    public void sendMessages(StreamId streamId, TopicId topicId, Partitioning partitioning, List<Message> messages) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(partitioning));

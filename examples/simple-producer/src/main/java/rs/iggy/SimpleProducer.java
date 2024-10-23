@@ -6,7 +6,7 @@ import rs.iggy.clients.blocking.tcp.IggyTcpClient;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import rs.iggy.message.BigIntegerMessageId;
-import rs.iggy.message.MessageToSend;
+import rs.iggy.message.Message;
 import rs.iggy.message.Partitioning;
 import rs.iggy.message.PartitioningKind;
 import rs.iggy.stream.StreamDetails;
@@ -34,7 +34,7 @@ public class SimpleProducer {
         int counter = 0;
         while (counter++ < 1000) {
             var text = "message from simple producer " + counter;
-            var message = new MessageToSend(new BigIntegerMessageId(BigInteger.ZERO), text.getBytes(), empty());
+            var message = new Message(new BigIntegerMessageId(BigInteger.ZERO), text.getBytes(), empty());
             client.messages()
                     .sendMessages(STREAM_ID,
                             TOPIC_ID,
