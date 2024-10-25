@@ -64,7 +64,9 @@ class UsersHttpClient implements UsersClient {
 
     @Override
     public IdentityInfo login(String username, String password) {
-        var request = httpClient.preparePostRequest(USERS + "/login", new Login(username, password));
+        String version = "0.6.30";
+        String context = "java-sdk";
+        var request = httpClient.preparePostRequest(USERS + "/login", new Login(username, password, version, context));
         var response = httpClient.execute(request, IdentityInfo.class);
         httpClient.setToken(response.accessToken().map(TokenInfo::token));
         return response;
@@ -77,7 +79,7 @@ class UsersHttpClient implements UsersClient {
         httpClient.setToken(Optional.empty());
     }
 
-    record Login(String username, String password) {
+    record Login(String username, String password, String version, String context) {
     }
 
     private record CreateUser(String username, String password, UserStatus status, Optional<Permissions> permissions) {
