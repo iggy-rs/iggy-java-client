@@ -55,7 +55,7 @@ public class SimpleProducer {
                 .createTopic(STREAM_ID,
                         empty(),
                         1L,
-                        CompressionAlgorithm.none,
+                        CompressionAlgorithm.None,
                         BigInteger.ZERO,
                         BigInteger.ZERO,
                         empty(),

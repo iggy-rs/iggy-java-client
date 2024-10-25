@@ -1,8 +1,8 @@
 package rs.iggy.topic;
 
 public enum CompressionAlgorithm {
-    none(1),
-    gzip(2);
+    None(1),
+    Gzip(2);
 
     private final Integer code;
 

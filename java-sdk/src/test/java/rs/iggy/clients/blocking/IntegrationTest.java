@@ -39,7 +39,7 @@ public abstract class IntegrationTest {
                 .createTopic(42L,
                         of(42L),
                         1L,
-                        CompressionAlgorithm.none,
+                        CompressionAlgorithm.None,
                         BigInteger.ZERO,
                         BigInteger.ZERO,
                         empty(),

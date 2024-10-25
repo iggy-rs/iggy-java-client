@@ -1,8 +1,12 @@
 package rs.iggy.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum UserStatus {
-    active(1),
-    inactive(2);
+    @JsonProperty("active")
+    Active(1),
+    @JsonProperty("inactive")
+    Inactive(2);
 
     private final int code;
 

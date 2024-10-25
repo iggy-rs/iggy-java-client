@@ -46,7 +46,10 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
         login();
 
         // when
-        var createdUser = usersClient.createUser("test", "test", UserStatus.active, Optional.of(new Permissions(createGlobalPermissions(true), Collections.emptyMap())));
+        var createdUser = usersClient.createUser("test",
+                "test",
+                UserStatus.Active,
+                Optional.of(new Permissions(createGlobalPermissions(true), Collections.emptyMap())));
 
         // then
         assertThat(createdUser).isNotNull();
@@ -71,14 +74,14 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
     void shouldUpdateUserStatus() {
         // given
         login();
-        UserInfoDetails user = usersClient.createUser("test", "test", UserStatus.active, Optional.empty());
+        UserInfoDetails user = usersClient.createUser("test", "test", UserStatus.Active, Optional.empty());
 
         // when
-        usersClient.updateUser(user.id(), Optional.empty(), Optional.of(UserStatus.inactive));
+        usersClient.updateUser(user.id(), Optional.empty(), Optional.of(UserStatus.Inactive));
 
         // then
         List<UserInfo> users = usersClient.getUsers();
-        assertThat(users).map(UserInfo::status).contains(UserStatus.inactive);
+        assertThat(users).map(UserInfo::status).contains(UserStatus.Inactive);
     }
 
     @Test
@@ -86,7 +89,7 @@ public abstract class UsersClientBaseTest extends IntegrationTest {
         // given
         var permissions = new Permissions(createGlobalPermissions(true), Collections.emptyMap());
         login();
-        UserInfoDetails user = usersClient.createUser("test", "test", UserStatus.active, Optional.of(permissions));
+        UserInfoDetails user = usersClient.createUser("test", "test", UserStatus.Active, Optional.of(permissions));
 
         // when
         usersClient.updatePermissions(user.id(), Optional.of(new Permissions(createGlobalPermissions(false), Collections.emptyMap())));

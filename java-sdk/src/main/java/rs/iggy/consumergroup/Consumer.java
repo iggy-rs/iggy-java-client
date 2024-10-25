@@ -21,7 +21,8 @@ public record Consumer(Kind kind, ConsumerId id) {
     }
 
     public enum Kind {
-        Consumer(1), ConsumerGroup(2);
+        Consumer(1),
+        ConsumerGroup(2);
 
         private final int code;
 
