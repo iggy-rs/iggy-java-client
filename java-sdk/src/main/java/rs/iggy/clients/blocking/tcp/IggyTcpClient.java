@@ -15,16 +15,16 @@ public class IggyTcpClient implements IggyClient {
     private final PersonalAccessTokensTcpClient personalAccessTokensClient;
 
     public IggyTcpClient(String host, Integer port) {
-        TcpConnectionHandler connection = new TcpConnectionHandler(host, port);
-        usersClient = new UsersTcpClient(connection);
-        streamsClient = new StreamsTcpClient(connection);
-        topicsClient = new TopicsTcpClient(connection);
-        partitionsClient = new PartitionsTcpClient(connection);
-        consumerGroupsClient = new ConsumerGroupsTcpClient(connection);
-        consumerOffsetsClient = new ConsumerOffsetTcpClient(connection);
-        messagesClient = new MessagesTcpClient(connection);
-        systemClient = new SystemTcpClient(connection);
-        personalAccessTokensClient = new PersonalAccessTokensTcpClient(connection);
+        InternalTcpClient tcpClient = new InternalTcpClient(host, port);
+        usersClient = new UsersTcpClient(tcpClient);
+        streamsClient = new StreamsTcpClient(tcpClient);
+        topicsClient = new TopicsTcpClient(tcpClient);
+        partitionsClient = new PartitionsTcpClient(tcpClient);
+        consumerGroupsClient = new ConsumerGroupsTcpClient(tcpClient);
+        consumerOffsetsClient = new ConsumerOffsetTcpClient(tcpClient);
+        messagesClient = new MessagesTcpClient(tcpClient);
+        systemClient = new SystemTcpClient(tcpClient);
+        personalAccessTokensClient = new PersonalAccessTokensTcpClient(tcpClient);
     }
 
     @Override

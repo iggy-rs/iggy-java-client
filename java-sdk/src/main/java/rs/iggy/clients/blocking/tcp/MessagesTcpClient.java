@@ -17,10 +17,10 @@ class MessagesTcpClient implements MessagesClient {
     private static final int POLL_MESSAGES_CODE = 100;
     private static final int SEND_MESSAGES_CODE = 101;
 
-    private final TcpConnectionHandler connection;
+    private final InternalTcpClient tcpClient;
 
-    public MessagesTcpClient(TcpConnectionHandler connection) {
-        this.connection = connection;
+    public MessagesTcpClient(InternalTcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     @Override
@@ -33,7 +33,7 @@ class MessagesTcpClient implements MessagesClient {
         payload.writeIntLE(count.intValue());
         payload.writeByte(autoCommit ? 1 : 0);
 
-        var response = connection.send(POLL_MESSAGES_CODE, payload);
+        var response = tcpClient.send(POLL_MESSAGES_CODE, payload);
 
         return BytesDeserializer.readPolledMessages(response);
     }
@@ -47,6 +47,6 @@ class MessagesTcpClient implements MessagesClient {
             payload.writeBytes(toBytes(message));
         }
 
-        connection.send(SEND_MESSAGES_CODE, payload);
+        tcpClient.send(SEND_MESSAGES_CODE, payload);
     }
 }

@@ -16,10 +16,10 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
     private static final int GET_CONSUMER_OFFSET_CODE = 120;
     private static final int STORE_CONSUMER_OFFSET_CODE = 121;
 
-    private final TcpConnectionHandler connection;
+    private final InternalTcpClient tcpClient;
 
-    public ConsumerOffsetTcpClient(TcpConnectionHandler connection) {
-        this.connection = connection;
+    public ConsumerOffsetTcpClient(InternalTcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     @Override
@@ -30,7 +30,7 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
         payload.writeIntLE(partitionId.orElse(0L).intValue());
         payload.writeBytes(toBytesAsU64(offset));
 
-        connection.send(STORE_CONSUMER_OFFSET_CODE, payload);
+        tcpClient.send(STORE_CONSUMER_OFFSET_CODE, payload);
     }
 
     @Override
@@ -40,7 +40,7 @@ class ConsumerOffsetTcpClient implements ConsumerOffsetsClient {
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionId.orElse(0L).intValue());
 
-        var response = connection.send(GET_CONSUMER_OFFSET_CODE, payload);
+        var response = tcpClient.send(GET_CONSUMER_OFFSET_CODE, payload);
         if (response.isReadable()) {
             return Optional.of(readConsumerOffsetInfo(response));
         }

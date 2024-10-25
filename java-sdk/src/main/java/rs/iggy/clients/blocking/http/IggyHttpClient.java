@@ -15,7 +15,7 @@ public class IggyHttpClient implements IggyClient {
     private final PersonalAccessTokensHttpClient personalAccessTokensHttpClient;
 
     public IggyHttpClient(String url) {
-        HttpClient httpClient = new HttpClient(url);
+        InternalHttpClient httpClient = new InternalHttpClient(url);
         systemClient = new SystemHttpClient(httpClient);
         streamsClient = new StreamsHttpClient(httpClient);
         usersClient = new UsersHttpClient(httpClient);

@@ -25,10 +25,10 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     private static final int JOIN_CONSUMER_GROUP_CODE = 604;
     private static final int LEAVE_CONSUMER_GROUP_CODE = 605;
 
-    private final TcpConnectionHandler connection;
+    private final InternalTcpClient tcpClient;
 
-    public ConsumerGroupsTcpClient(TcpConnectionHandler connection) {
-        this.connection = connection;
+    public ConsumerGroupsTcpClient(InternalTcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     @Override
@@ -36,7 +36,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
-        var response = connection.send(GET_CONSUMER_GROUP_CODE, payload);
+        var response = tcpClient.send(GET_CONSUMER_GROUP_CODE, payload);
         if (response.isReadable()) {
             return Optional.of(readConsumerGroupDetails(response));
         }
@@ -47,7 +47,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
     public List<ConsumerGroup> getConsumerGroups(StreamId streamId, TopicId topicId) {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
-        var response = connection.send(GET_CONSUMER_GROUPS_CODE, payload);
+        var response = tcpClient.send(GET_CONSUMER_GROUPS_CODE, payload);
         List<ConsumerGroup> groups = new ArrayList<>();
         while (response.isReadable()) {
             groups.add(readConsumerGroup(response));
@@ -66,7 +66,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
         payload.writeIntLE(groupId.orElse(0L).intValue());
         payload.writeBytes(nameToBytes(name));
 
-        ByteBuf response = connection.send(CREATE_CONSUMER_GROUP_CODE, payload);
+        ByteBuf response = tcpClient.send(CREATE_CONSUMER_GROUP_CODE, payload);
         return readConsumerGroupDetails(response);
     }
 
@@ -75,7 +75,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
-        connection.send(DELETE_CONSUMER_GROUP_CODE, payload);
+        tcpClient.send(DELETE_CONSUMER_GROUP_CODE, payload);
     }
 
     @Override
@@ -84,7 +84,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
 
-        connection.send(JOIN_CONSUMER_GROUP_CODE, payload);
+        tcpClient.send(JOIN_CONSUMER_GROUP_CODE, payload);
     }
 
     @Override
@@ -93,7 +93,7 @@ class ConsumerGroupsTcpClient implements ConsumerGroupsClient {
         payload.writeBytes(toBytes(topicId));
         payload.writeBytes(toBytes(groupId));
 
-        connection.send(LEAVE_CONSUMER_GROUP_CODE, payload);
+        tcpClient.send(LEAVE_CONSUMER_GROUP_CODE, payload);
     }
 
 }

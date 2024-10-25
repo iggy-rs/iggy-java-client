@@ -12,9 +12,9 @@ import java.util.Optional;
 
 class ConsumerGroupsHttpClient implements ConsumerGroupsClient {
 
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public ConsumerGroupsHttpClient(HttpClient httpClient) {
+    public ConsumerGroupsHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

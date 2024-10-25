@@ -14,9 +14,9 @@ import java.util.Optional;
 
 class MessagesHttpClient implements MessagesClient {
 
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public MessagesHttpClient(HttpClient httpClient) {
+    public MessagesHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

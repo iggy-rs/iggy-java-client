@@ -12,9 +12,9 @@ import java.util.Optional;
 class ConsumerOffsetsHttpClient implements ConsumerOffsetsClient {
 
     private static final String DEFAULT_PARTITION_ID = "1";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public ConsumerOffsetsHttpClient(HttpClient httpClient) {
+    public ConsumerOffsetsHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

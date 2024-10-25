@@ -10,9 +10,9 @@ import java.util.Optional;
 class UsersHttpClient implements UsersClient {
 
     private static final String USERS = "/users";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public UsersHttpClient(HttpClient httpClient) {
+    public UsersHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-final class TcpConnectionHandler {
+final class InternalTcpClient {
 
     private static final int REQUEST_INITIAL_BYTES_LENGTH = 4;
     private static final int COMMAND_LENGTH = 4;
@@ -20,7 +20,7 @@ final class TcpConnectionHandler {
     private final Connection connection;
     private final BlockingQueue<IggyResponse> responses = new LinkedBlockingQueue<>();
 
-    TcpConnectionHandler(String host, Integer port) {
+    InternalTcpClient(String host, Integer port) {
         this.connection = TcpClient.create()
                 .host(host)
                 .port(port)

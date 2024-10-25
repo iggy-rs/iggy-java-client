@@ -17,16 +17,16 @@ import rs.iggy.clients.blocking.http.error.IggyHttpException;
 import java.io.IOException;
 import java.util.Optional;
 
-class HttpClient {
+final class InternalHttpClient {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
+    private static final Logger log = LoggerFactory.getLogger(InternalHttpClient.class);
 
     private static final String AUTHORIZATION = "Authorization";
     private final String url;
     private final ObjectMapper objectMapper = ObjectMapperFactory.getInstance();
     private Optional<String> token = Optional.empty();
 
-    HttpClient(String url) {
+    InternalHttpClient(String url) {
         this.url = url;
     }
 

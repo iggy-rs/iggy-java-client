@@ -9,10 +9,10 @@ class PartitionsTcpClient implements PartitionsClient {
 
     private static final int CREATE_PARTITION_CODE = 402;
     private static final int DELETE_PARTITION_CODE = 403;
-    private final TcpConnectionHandler connection;
+    private final InternalTcpClient tcpClient;
 
-    PartitionsTcpClient(TcpConnectionHandler connection) {
-        this.connection = connection;
+    PartitionsTcpClient(InternalTcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     @Override
@@ -20,7 +20,7 @@ class PartitionsTcpClient implements PartitionsClient {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionsCount.intValue());
-        connection.send(CREATE_PARTITION_CODE, payload);
+        tcpClient.send(CREATE_PARTITION_CODE, payload);
     }
 
     @Override
@@ -28,6 +28,6 @@ class PartitionsTcpClient implements PartitionsClient {
         var payload = toBytes(streamId);
         payload.writeBytes(toBytes(topicId));
         payload.writeIntLE(partitionsCount.intValue());
-        connection.send(DELETE_PARTITION_CODE, payload);
+        tcpClient.send(DELETE_PARTITION_CODE, payload);
     }
 }

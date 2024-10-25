@@ -12,9 +12,9 @@ class SystemHttpClient implements SystemClient {
     private static final String STATS = "/stats";
     private static final String CLIENTS = "/clients";
     private static final String PING = "/ping";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public SystemHttpClient(HttpClient httpClient) {
+    public SystemHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

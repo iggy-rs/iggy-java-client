@@ -16,21 +16,21 @@ class SystemTcpClient implements SystemClient {
     private static final int GET_CLIENT_CODE = 21;
     private static final int GET_CLIENTS_CODE = 22;
 
-    private final TcpConnectionHandler connection;
+    private final InternalTcpClient tcpClient;
 
-    SystemTcpClient(TcpConnectionHandler connection) {
-        this.connection = connection;
+    SystemTcpClient(InternalTcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     @Override
     public Stats getStats() {
-        var response = connection.send(GET_STATS_CODE);
+        var response = tcpClient.send(GET_STATS_CODE);
         return readStats(response);
     }
 
     @Override
     public ClientInfoDetails getMe() {
-        var response = connection.send(GET_ME_CODE);
+        var response = tcpClient.send(GET_ME_CODE);
         return readClientInfoDetails(response);
     }
 
@@ -38,13 +38,13 @@ class SystemTcpClient implements SystemClient {
     public ClientInfoDetails getClient(Long clientId) {
         var payload = Unpooled.buffer(4);
         payload.writeIntLE(clientId.intValue());
-        var response = connection.send(GET_CLIENT_CODE, payload);
+        var response = tcpClient.send(GET_CLIENT_CODE, payload);
         return readClientInfoDetails(response);
     }
 
     @Override
     public List<ClientInfo> getClients() {
-        var response = connection.send(GET_CLIENTS_CODE);
+        var response = tcpClient.send(GET_CLIENTS_CODE);
         List<ClientInfo> clients = new ArrayList<>();
         while (response.isReadable()) {
             clients.add(readClientInfo(response));
@@ -54,7 +54,7 @@ class SystemTcpClient implements SystemClient {
 
     @Override
     public String ping() {
-        connection.send(PING_CODE);
+        tcpClient.send(PING_CODE);
         return "";
     }
 }

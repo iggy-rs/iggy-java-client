@@ -11,9 +11,9 @@ import java.util.Optional;
 class StreamsHttpClient implements StreamsClient {
 
     private static final String STREAMS = "/streams";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public StreamsHttpClient(HttpClient httpClient) {
+    public StreamsHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

@@ -10,9 +10,9 @@ class PartitionsHttpClient implements PartitionsClient {
     private static final String STREAMS = "/streams";
     private static final String TOPICS = "/topics";
     private static final String PARTITIONS = "/partitions";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public PartitionsHttpClient(HttpClient httpClient) {
+    public PartitionsHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

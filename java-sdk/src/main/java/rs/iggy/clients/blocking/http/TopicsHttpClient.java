@@ -15,9 +15,9 @@ class TopicsHttpClient implements TopicsClient {
 
     private static final String STREAMS = "/streams";
     private static final String TOPICS = "/topics";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public TopicsHttpClient(HttpClient httpClient) {
+    public TopicsHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

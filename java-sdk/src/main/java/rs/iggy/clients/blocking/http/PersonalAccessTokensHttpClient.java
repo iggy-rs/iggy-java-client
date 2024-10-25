@@ -12,9 +12,9 @@ import java.util.List;
 class PersonalAccessTokensHttpClient implements PersonalAccessTokensClient {
 
     private static final String PERSONAL_ACCESS_TOKENS = "/personal-access-tokens";
-    private final HttpClient httpClient;
+    private final InternalHttpClient httpClient;
 
-    public PersonalAccessTokensHttpClient(HttpClient httpClient) {
+    public PersonalAccessTokensHttpClient(InternalHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
