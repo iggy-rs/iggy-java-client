@@ -2,7 +2,7 @@ package rs.iggy.clients.blocking.http;
 
 import rs.iggy.clients.blocking.*;
 
-public class IggyHttpClient implements IggyClient {
+public class IggyHttpClient implements IggyBaseClient {
 
     private final SystemHttpClient systemClient;
     private final StreamsHttpClient streamsClient;

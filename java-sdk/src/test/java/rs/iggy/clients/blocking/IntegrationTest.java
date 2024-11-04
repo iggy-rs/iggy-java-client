@@ -20,14 +20,14 @@ public abstract class IntegrationTest {
     protected final GenericContainer<?> iggyServer = new GenericContainer<>(DockerImageName.parse("iggyrs/iggy:latest"))
             .withExposedPorts(HTTP_PORT, TCP_PORT);
 
-    protected IggyClient client;
+    protected IggyBaseClient client;
 
     @BeforeEach
     void beforeEachIntegrationTest() {
         client = getClient();
     }
 
-    abstract protected IggyClient getClient();
+    abstract protected IggyBaseClient getClient();
 
     protected void setUpStream() {
         client.streams().createStream(of(42L), "test-stream");

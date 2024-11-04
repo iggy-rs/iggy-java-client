@@ -17,15 +17,19 @@ final class InternalTcpClient {
     private static final int COMMAND_LENGTH = 4;
     private static final int RESPONSE_INITIAL_BYTES_LENGTH = 8;
 
-    private final Connection connection;
+    private final TcpClient client;
     private final BlockingQueue<IggyResponse> responses = new LinkedBlockingQueue<>();
+    private Connection connection;
 
     InternalTcpClient(String host, Integer port) {
-        this.connection = TcpClient.create()
+        client = TcpClient.create()
                 .host(host)
                 .port(port)
-                .doOnConnected(conn -> conn.addHandlerLast(new IggyResponseDecoder()))
-                .connectNow();
+                .doOnConnected(conn -> conn.addHandlerLast(new IggyResponseDecoder()));
+    }
+
+    void connect() {
+        this.connection = client.connectNow();
         this.connection.inbound().receiveObject().ofType(IggyResponse.class).subscribe(responses::add);
     }
 

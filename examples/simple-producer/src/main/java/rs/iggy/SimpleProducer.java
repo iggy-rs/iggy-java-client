@@ -23,7 +23,7 @@ public class SimpleProducer {
     private static final Logger log = LoggerFactory.getLogger(SimpleProducer.class);
 
     public static void main(String[] args) {
-        IggyTcpClient client = new IggyTcpClient("localhost", 8090);
+        var client = new IggyTcpClient("localhost", 8090);
         client.users().login("iggy", "iggy");
 
         createStream(client);

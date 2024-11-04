@@ -1,12 +1,12 @@
 package rs.iggy.clients.blocking.http;
 
 import rs.iggy.clients.blocking.ConsumerGroupsClientBaseTest;
-import rs.iggy.clients.blocking.IggyClient;
+import rs.iggy.clients.blocking.IggyBaseClient;
 
 class ConsumerGroupsHttpClientTest extends ConsumerGroupsClientBaseTest {
 
     @Override
-    protected IggyClient getClient() {
+    protected IggyBaseClient getClient() {
         return HttpClientFactory.create(iggyServer);
     }
 

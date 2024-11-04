@@ -2,7 +2,7 @@ package rs.iggy.clients.blocking.tcp;
 
 import rs.iggy.clients.blocking.*;
 
-public class IggyTcpClient implements IggyClient {
+public class IggyTcpClient implements IggyBaseClient {
 
     private final UsersTcpClient usersClient;
     private final StreamsTcpClient streamsClient;
@@ -16,6 +16,7 @@ public class IggyTcpClient implements IggyClient {
 
     public IggyTcpClient(String host, Integer port) {
         InternalTcpClient tcpClient = new InternalTcpClient(host, port);
+        tcpClient.connect();
         usersClient = new UsersTcpClient(tcpClient);
         streamsClient = new StreamsTcpClient(tcpClient);
         topicsClient = new TopicsTcpClient(tcpClient);

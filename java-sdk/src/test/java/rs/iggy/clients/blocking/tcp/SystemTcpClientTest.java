@@ -1,7 +1,7 @@
 package rs.iggy.clients.blocking.tcp;
 
 import org.junit.jupiter.api.Test;
-import rs.iggy.clients.blocking.IggyClient;
+import rs.iggy.clients.blocking.IggyBaseClient;
 import rs.iggy.clients.blocking.SystemClientBaseTest;
 import rs.iggy.system.ClientInfo;
 import rs.iggy.system.ClientInfoDetails;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SystemTcpClientTest extends SystemClientBaseTest {
 
     @Override
-    protected IggyClient getClient() {
+    protected IggyBaseClient getClient() {
         return TcpClientFactory.create(iggyServer);
     }
 

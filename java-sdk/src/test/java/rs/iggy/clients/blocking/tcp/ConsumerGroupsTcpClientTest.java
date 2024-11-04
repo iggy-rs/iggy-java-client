@@ -2,14 +2,14 @@ package rs.iggy.clients.blocking.tcp;
 
 import org.junit.jupiter.api.Test;
 import rs.iggy.clients.blocking.ConsumerGroupsClientBaseTest;
-import rs.iggy.clients.blocking.IggyClient;
+import rs.iggy.clients.blocking.IggyBaseClient;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ConsumerGroupsTcpClientTest extends ConsumerGroupsClientBaseTest {
 
     @Override
-    protected IggyClient getClient() {
+    protected IggyBaseClient getClient() {
         return TcpClientFactory.create(iggyServer);
     }
 

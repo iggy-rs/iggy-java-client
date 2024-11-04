@@ -1,23 +1,15 @@
 package rs.iggy.clients.blocking;
 
-public interface IggyClient {
+public class IggyClient {
 
-    SystemClient system();
+    private final IggyBaseClient baseClient;
 
-    StreamsClient streams();
+    public IggyClient(IggyBaseClient baseClient) {
+        this.baseClient = baseClient;
+    }
 
-    UsersClient users();
-
-    TopicsClient topics();
-
-    PartitionsClient partitions();
-
-    ConsumerGroupsClient consumerGroups();
-
-    ConsumerOffsetsClient consumerOffsets();
-
-    MessagesClient messages();
-
-    PersonalAccessTokensClient personalAccessTokens();
+    public IggyBaseClient getBaseClient() {
+        return baseClient;
+    }
 
 }

@@ -2,6 +2,7 @@ package rs.iggy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rs.iggy.clients.blocking.IggyBaseClient;
 import rs.iggy.clients.blocking.tcp.IggyTcpClient;
 import rs.iggy.consumergroup.Consumer;
 import rs.iggy.consumergroup.ConsumerGroupDetails;
@@ -9,14 +10,12 @@ import rs.iggy.identifier.ConsumerId;
 import rs.iggy.identifier.StreamId;
 import rs.iggy.identifier.TopicId;
 import rs.iggy.message.PolledMessage;
-import rs.iggy.message.PolledMessages;
 import rs.iggy.message.PollingStrategy;
 import rs.iggy.stream.StreamDetails;
 import rs.iggy.topic.CompressionAlgorithm;
 import rs.iggy.topic.TopicDetails;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import static java.util.Optional.empty;
 
@@ -31,7 +30,7 @@ public class SimpleConsumer {
     private static final Logger log = LoggerFactory.getLogger(SimpleConsumer.class);
 
     public static void main(String[] args) {
-        IggyTcpClient client = new IggyTcpClient("localhost", 8090);
+        var client = new IggyTcpClient("localhost", 8090);
         client.users().login("iggy", "iggy");
 
         createStream(client);
@@ -39,9 +38,9 @@ public class SimpleConsumer {
         createConsumerGroup(client);
         client.consumerGroups().joinConsumerGroup(STREAM_ID, TOPIC_ID, GROUP_ID);
 
-        List<PolledMessage> messages = new ArrayList<>();
+        var messages = new ArrayList<PolledMessage>();
         while (messages.size() < 1000) {
-            PolledMessages polledMessages = client.messages()
+            var polledMessages = client.messages()
                     .pollMessages(STREAM_ID,
                             TOPIC_ID,
                             empty(),
@@ -57,7 +56,7 @@ public class SimpleConsumer {
         }
     }
 
-    private static void createStream(IggyTcpClient client) {
+    private static void createStream(IggyBaseClient client) {
         Optional<StreamDetails> stream = client.streams().getStream(STREAM_ID);
         if (stream.isPresent()) {
             return;
@@ -65,7 +64,7 @@ public class SimpleConsumer {
         client.streams().createStream(empty(), STREAM_NAME);
     }
 
-    private static void createTopic(IggyTcpClient client) {
+    private static void createTopic(IggyBaseClient client) {
         Optional<TopicDetails> topic = client.topics().getTopic(STREAM_ID, TOPIC_ID);
         if (topic.isPresent()) {
             return;
@@ -82,7 +81,7 @@ public class SimpleConsumer {
 
     }
 
-    private static void createConsumerGroup(IggyTcpClient client) {
+    private static void createConsumerGroup(IggyBaseClient client) {
         Optional<ConsumerGroupDetails> consumerGroup = client.consumerGroups()
                 .getConsumerGroup(STREAM_ID, TOPIC_ID, GROUP_ID);
         if (consumerGroup.isPresent()) {
