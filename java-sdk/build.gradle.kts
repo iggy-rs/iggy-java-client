@@ -45,12 +45,12 @@ publishing {
             from(components["java"])
 
             pom {
-                name = "Iggy Java Client SDK"
-                description = "Official Java client SDK for Iggy.rs message streaming"
+                name = "Apache Iggy Java Client SDK"
+                description = "Official Java client SDK for Apache Iggy message streaming"
                 url = "https://github.com/iggy-rs/iggy-java-client"
                 licenses {
                     license {
-                        name = "MIT License"
+                        name = "Apache License, Version 2.0"
                         url = "https://github.com/iggy-rs/iggy-java-client/blob/main/LICENSE"
                     }
                 }
