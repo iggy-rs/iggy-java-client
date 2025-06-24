@@ -1,4 +1,6 @@
-# Java SDK for Iggy
+# The source code has been moved to [Apache Iggy](https://github.com/apache/iggy/)
+
+## Java SDK for Iggy
 
 [Iggy GitHub](https://github.com/iggy-rs/iggy) | [Website](https://iggy.rs) | [Getting started](https://docs.iggy.rs/introduction/getting-started/) | [Documentation](https://docs.iggy.rs) | [Blog](https://blog.iggy.rs) | [Discord](https://iggy.rs/discord)
 
